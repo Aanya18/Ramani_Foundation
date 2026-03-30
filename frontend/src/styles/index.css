@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-ink antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    @apply bg-ambergold-300/60 text-ink;
+  }
+}
+
+@layer components {
+  .section-shell {
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
+    max-width: 82rem;
+  }
+
+  .section-space {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center rounded-full border border-trust-100 bg-white/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-trust-700;
+  }
+
+  .panel {
+    @apply rounded-[30px] border border-white/70 shadow-panel backdrop-blur;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.88));
+  }
+
+  .page-hero {
+    @apply relative overflow-hidden rounded-[36px] border border-white/60 bg-gradient-to-br from-trust-700 via-trust-700 to-trust-900 text-white shadow-float;
+  }
+
+  .text-link {
+    @apply font-semibold text-trust-700 transition hover:text-trust-900;
+  }
+
+  .reading-card {
+    @apply h-full border border-trust-100/70 bg-white/90 shadow-panel transition duration-300 hover:-translate-y-1 hover:shadow-float;
+  }
+
+  .section-surface {
+    @apply rounded-[36px] border border-white/60 bg-white/60 p-6 shadow-panel sm:p-8;
+  }
+
+  .soft-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-trust-100 to-transparent;
+  }
+}
+
+@media (min-width: 640px) {
+  .section-space {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-space {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
