@@ -4,7 +4,7 @@ from app.core.config import settings
 from app.services.user import UserService
 from app.models.user import AdminUser
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.AUTH_TOKEN_URL)
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme), 

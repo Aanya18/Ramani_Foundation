@@ -11,7 +11,7 @@ app = FastAPI(title=settings.PROJECT_NAME)
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,8 +19,8 @@ app.add_middleware(
 
 # Static files for uploads
 import os
-os.makedirs("uploads", exist_ok=True)
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+os.makedirs(settings.UPLOADS_DIR, exist_ok=True)
+app.mount(f"/{settings.UPLOADS_DIR}", StaticFiles(directory=settings.UPLOADS_DIR), name=settings.UPLOADS_DIR)
 
 # Include public routers
 app.include_router(public_auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
@@ -42,4 +42,4 @@ async def startup_event():
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Ramani Foundation API"}
+    return {"message": settings.ROOT_MESSAGE}
