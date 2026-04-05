@@ -1,7 +1,10 @@
 venv/
 __pycache__/
 *.pyc
-backend/data/database.db
+backend/data/*
+!backend/data/.gitkeep
 backend/uploads/*
 !backend/uploads/.gitkeep
+backend/cache/*
+!backend/cache/.gitkeep
 backend/venv/
