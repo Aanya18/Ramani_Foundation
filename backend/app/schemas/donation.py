@@ -1,26 +1,22 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 
-class DonationInitiateRequest(BaseModel):
-    full_name: str = Field(min_length=2, max_length=160)
+class DonationBase(BaseModel):
+    donor_name: str
     email: EmailStr
-    phone: str | None = None
-    amount_paise: int = Field(gt=0)
-    frequency: str = "one_time"
-    campaign_slug: str | None = None
-    donor_note: str | None = None
-    anonymous: bool = False
+    amount: str
 
 
-class DonationInitiateResponse(BaseModel):
-    donation_id: str
-    reference: str
-    status: str
-    checkout_provider: str
+class DonationCreate(DonationBase):
+    pass
 
 
-class DonationStatusResponse(BaseModel):
-    reference: str
-    status: str
-    amount_paise: int
-    currency: str = "INR"
+class DonationResponse(DonationBase):
+    id: int
+    proof_image_url: str
+    verified: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

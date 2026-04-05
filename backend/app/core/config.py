@@ -1,19 +1,13 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    app_name: str = "Ramani Foundation API"
-    api_version: str = "0.1.0"
-    secret_key: str = "change-me-in-production"
-    access_token_expire_minutes: int = 30
-    database_url: str = "sqlite:///./sahaay.db"
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    PROJECT_NAME: str = "Ramani Foundation API"
+    API_V1_STR: str = "/api/v1"
+    SECRET_KEY: str = "your-secret-key-here" # placeholder
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    DATABASE_URL: str = "sqlite+aiosqlite:///data/database.db"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
-
+    class Config:
+        case_sensitive = True
 
 settings = Settings()

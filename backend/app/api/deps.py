@@ -1,13 +1,14 @@
-from collections.abc import Generator
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
+from app.core.config import settings
+from app.services.user import UserService
+from app.models.user import AdminUser
 
-from sqlalchemy.orm import Session
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
-from app.db.session import SessionLocal
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), 
+    user_service: UserService = Depends()
+) -> AdminUser:
+    return await user_service.get_user_from_token(token)
 
-
-def get_db() -> Generator[Session, None, None]:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()

@@ -1,3 +1,7 @@
-.ven/
-node_modules
-_pycache_
+venv/
+__pycache__/
+*.pyc
+backend/data/database.db
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/venv/
