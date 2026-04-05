@@ -1,8 +1,8 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from app.core.config import settings
-from app.services.user import UserService
-from app.models.user import AdminUser
+from app.core import settings
+from app.services import UserService
+from app.models import AdminUser
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.AUTH_TOKEN_URL)
 

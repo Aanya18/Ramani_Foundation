@@ -1,12 +1,11 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.core.database import get_db
-from app.core.security import verify_password, create_access_token
-from app.repository.user import UserRepository
-from app.schemas.token import Token
+from app.core import get_db, verify_password, create_access_token, settings
+from app.repository import UserRepository
+from app.schemas import Token
 from datetime import timedelta
-from app.core.config import settings
+
 
 class AuthService:
     def __init__(self, db: AsyncSession = Depends(get_db)):

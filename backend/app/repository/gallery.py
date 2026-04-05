@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.gallery import GalleryItem
+from app.models import GalleryItem
 from typing import List
 
 class GalleryRepository:

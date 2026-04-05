@@ -1,11 +1,10 @@
 from fastapi import Depends, UploadFile, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.core.database import get_db
-from app.repository.gallery import GalleryRepository
-from app.models.gallery import GalleryItem
-from app.schemas.gallery import GalleryItemResponse
-from app.core.config import settings
-from app.utils.utils import save_upload_file
+from app.core import get_db, settings
+from app.repository import GalleryRepository
+from app.models import GalleryItem
+from app.schemas import GalleryItemResponse
+from app.utils import save_upload_file
 import uuid
 import os
 from typing import List

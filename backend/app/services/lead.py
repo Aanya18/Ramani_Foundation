@@ -1,9 +1,9 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.core.database import get_db
-from app.repository.lead import LeadRepository
-from app.models.lead import Lead
-from app.schemas.lead import LeadCreate, LeadResponse
+from app.core import get_db
+from app.repository import LeadRepository
+from app.models import Lead
+from app.schemas import LeadCreate, LeadResponse
 from typing import List
 
 class LeadService:

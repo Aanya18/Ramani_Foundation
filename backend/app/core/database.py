@@ -2,7 +2,7 @@ import os
 import pathlib
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
-from app.core.config import settings
+from app.core import settings
 
 # Create directory for the database if it's a local sqlite file
 if settings.DATABASE_URL.startswith("sqlite"):

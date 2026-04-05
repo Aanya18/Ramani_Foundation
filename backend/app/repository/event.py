@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.event import Event
+from app.models import Event
 from typing import List
 
 class EventRepository:

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from app.schemas.gallery import GalleryItemResponse
-from app.services.gallery import GalleryService
+from app.schemas import GalleryItemResponse
+from app.services import GalleryService
 
 router = APIRouter()
 

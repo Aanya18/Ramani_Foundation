@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from app.schemas.donation import DonationResponse
-from app.services.donation import DonationService
+from app.schemas import DonationResponse
+from app.services import DonationService
 from app.api.deps import get_current_user
 
 router = APIRouter(dependencies=[Depends(get_current_user)])

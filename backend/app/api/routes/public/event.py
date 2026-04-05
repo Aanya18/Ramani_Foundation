@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from app.schemas.event import EventResponse
-from app.services.event import EventService
+from app.schemas import EventResponse
+from app.services import EventService
 
 router = APIRouter()
 

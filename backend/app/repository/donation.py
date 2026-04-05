@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.donation import Donation
+from app.models import Donation
 from typing import List
 
 class DonationRepository:

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import List
-from app.schemas.gallery import GalleryItemResponse
-from app.services.gallery import GalleryService
+from app.schemas import GalleryItemResponse
+from app.services import GalleryService
 from app.api.deps import get_current_user
 
 router = APIRouter(dependencies=[Depends(get_current_user)])

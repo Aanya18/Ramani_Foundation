@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form
-from app.schemas.donation import DonationResponse
-from app.services.donation import DonationService
+from app.schemas import DonationResponse
+from app.services import DonationService
 
 router = APIRouter()
 

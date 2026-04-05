@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from app.schemas.lead import LeadResponse
-from app.services.lead import LeadService
+from app.schemas import LeadResponse
+from app.services import LeadService
 from app.api.deps import get_current_user
 
 router = APIRouter(dependencies=[Depends(get_current_user)])

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 import jwt
 from typing import Optional
-from app.core.config import settings
+from app.core import settings
 
 pwd_context = CryptContext(schemes=[settings.HASHING_SCHEME], deprecated="auto")
 

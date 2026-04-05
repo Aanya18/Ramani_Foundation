@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.core.config import settings
-from app.core.database import engine, Base
-from app.api.routes.public import auth as public_auth, event as public_event, gallery as public_gallery, lead as public_lead, donation as public_donation
-from app.api.routes.private import event as private_event, gallery as private_gallery, lead as private_lead, donation as private_donation
+from app.core import settings, engine, Base
+from app.api import public_auth_router, public_event_router, public_gallery_router, public_lead_router, public_donation_router, private_event_router, private_gallery_router, private_lead_router, private_donation_router
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -23,17 +21,17 @@ os.makedirs(settings.UPLOADS_DIR, exist_ok=True)
 app.mount(f"/{settings.UPLOADS_DIR}", StaticFiles(directory=settings.UPLOADS_DIR), name=settings.UPLOADS_DIR)
 
 # Include public routers
-app.include_router(public_auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
-app.include_router(public_event.router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
-app.include_router(public_gallery.router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
-app.include_router(public_lead.router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
-app.include_router(public_donation.router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
+app.include_router(public_auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+app.include_router(public_event_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
+app.include_router(public_gallery_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
+app.include_router(public_lead_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
+app.include_router(public_donation_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 
 # Include private routers
-app.include_router(private_event.router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
-app.include_router(private_gallery.router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
-app.include_router(private_lead.router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
-app.include_router(private_donation.router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
+app.include_router(private_event_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
+app.include_router(private_gallery_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
+app.include_router(private_lead_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
+app.include_router(private_donation_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 
 @app.on_event("startup")
 async def startup_event():

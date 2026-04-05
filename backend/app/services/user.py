@@ -1,10 +1,9 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
-from app.core.database import get_db
-from app.core.config import settings
-from app.models.user import AdminUser
-from app.repository.user import UserRepository
+from app.core import get_db, settings
+from app.models import AdminUser
+from app.repository import UserRepository
 
 class UserService:
     def __init__(self, db: AsyncSession = Depends(get_db)):

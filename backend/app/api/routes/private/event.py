@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import List
-from app.schemas.event import EventResponse
-from app.services.event import EventService
+from app.schemas import EventResponse
+from app.services import EventService
 from app.api.deps import get_current_user
 
 router = APIRouter(dependencies=[Depends(get_current_user)])

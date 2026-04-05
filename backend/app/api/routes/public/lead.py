@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from app.schemas.lead import LeadCreate, LeadResponse
-from app.services.lead import LeadService
+from app.schemas import LeadCreate, LeadResponse
+from app.services import LeadService
 
 router = APIRouter()
 
