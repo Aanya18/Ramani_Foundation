@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     JWT_ALGORITHM: str
     HASHING_SCHEME: str
+    ARGON2_TIME_COST: int
+    ARGON2_MEMORY_COST: int
+    ARGON2_PARALLELISM: int
 
     # CORS Settings
     BACKEND_CORS_ORIGINS: Union[str, List[str]]
