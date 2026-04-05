@@ -2,12 +2,14 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models import Donation
+from app.core import cache, settings
 from typing import List
 
 class DonationRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    @cache.memoize(tag="donations", expire=settings.DEFAULT_CACHE_EXPIRE_SECONDS)
     async def get_all(self) -> List[Donation]:
         result = await self.db.execute(select(Donation).order_by(Donation.created_at.desc()))
         return result.scalars().all()
@@ -16,6 +18,7 @@ class DonationRepository:
         self.db.add(donation)
         await self.db.commit()
         await self.db.refresh(donation)
+        cache.invalidate_tag("donations")
         return donation
 
     async def get_by_id(self, donation_id: uuid.UUID) -> Donation | None:
@@ -26,4 +29,5 @@ class DonationRepository:
         donation.verified = True
         await self.db.commit()
         await self.db.refresh(donation)
+        cache.invalidate_tag("donations")
         return donation

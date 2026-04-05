@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     # Authentication URL
     AUTH_TOKEN_URL: str
 
+    # Caching Settings
+    CACHE_DIR: str
+    DEFAULT_CACHE_EXPIRE_SECONDS: int
+
     class Config:
         case_sensitive = True
         env_file = ".env"
