@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, DateTime, Boolean
+from sqlalchemy import Column, String, DateTime, Boolean, Index
 from sqlalchemy.sql import func
 from app.core import Base, GUID
 
@@ -13,3 +13,8 @@ class Donation(Base):
     proof_image_url = Column(String, nullable=False)
     verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_donations_created_at', 'created_at'),
+        Index('idx_donations_email', 'email'),
+    )
