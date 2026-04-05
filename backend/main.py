@@ -33,10 +33,7 @@ app.include_router(private_gallery_router, prefix=f"{settings.API_V1_STR}/admin"
 app.include_router(private_lead_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_donation_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 
-@app.on_event("startup")
-async def startup_event():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+
 
 @app.get("/")
 def read_root():

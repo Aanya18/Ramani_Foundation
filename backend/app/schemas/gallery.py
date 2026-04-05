@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+import uuid
 
 
 class GalleryItemBase(BaseModel):
@@ -11,7 +12,7 @@ class GalleryItemCreate(GalleryItemBase):
 
 
 class GalleryItemResponse(GalleryItemBase):
-    id: int
+    id: uuid.UUID
     image_url: str
     created_at: datetime
 

@@ -38,7 +38,7 @@ class DonationService:
         created_donation = await self.donation_repo.create(db_donation)
         return DonationResponse.from_orm(created_donation)
 
-    async def verify_donation(self, donation_id: int) -> DonationResponse:
+    async def verify_donation(self, donation_id: uuid.UUID) -> DonationResponse:
         donation = await self.donation_repo.get_by_id(donation_id)
         if not donation:
             raise HTTPException(status_code=404, detail="Donation not found")

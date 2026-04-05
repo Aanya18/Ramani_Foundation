@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+import uuid
 
 
 class EventBase(BaseModel):
@@ -15,7 +16,7 @@ class EventCreate(EventBase):
 
 
 class EventResponse(EventBase):
-    id: int
+    id: uuid.UUID
     image_url: Optional[str] = None
     created_at: datetime
 

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+import uuid
 
 
 class DonationBase(BaseModel):
@@ -13,7 +14,7 @@ class DonationCreate(DonationBase):
 
 
 class DonationResponse(DonationBase):
-    id: int
+    id: uuid.UUID
     proof_image_url: str
     verified: bool
     created_at: datetime

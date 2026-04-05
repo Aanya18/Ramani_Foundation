@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
+import uuid
+from sqlalchemy import Column, String, Text, DateTime
 from sqlalchemy.sql import func
-from app.core import Base
+from app.core import Base, GUID
 
 
 class Lead(Base):
     __tablename__ = "leads"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(GUID, primary_key=True, default=uuid.uuid4, index=True)
     type = Column(String, nullable=False)  # "volunteer" or "contact"
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)

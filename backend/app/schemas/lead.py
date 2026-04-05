@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+import uuid
 
 
 class LeadCreate(BaseModel):
@@ -12,7 +13,7 @@ class LeadCreate(BaseModel):
 
 
 class LeadResponse(LeadCreate):
-    id: int
+    id: uuid.UUID
     created_at: datetime
 
     class Config:

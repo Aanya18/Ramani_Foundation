@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+import uuid
+from sqlalchemy import Column, String, DateTime, Boolean
 from sqlalchemy.sql import func
-from app.core import Base
+from app.core import Base, GUID
 
 
 class Donation(Base):
     __tablename__ = "donations"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(GUID, primary_key=True, default=uuid.uuid4, index=True)
     donor_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     amount = Column(String, nullable=False)

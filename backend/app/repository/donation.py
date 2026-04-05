@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models import Donation
@@ -17,7 +18,7 @@ class DonationRepository:
         await self.db.refresh(donation)
         return donation
 
-    async def get_by_id(self, donation_id: int) -> Donation | None:
+    async def get_by_id(self, donation_id: uuid.UUID) -> Donation | None:
         result = await self.db.execute(select(Donation).where(Donation.id == donation_id))
         return result.scalars().first()
 

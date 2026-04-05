@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends
 from typing import List
 from app.schemas import DonationResponse
@@ -11,5 +12,5 @@ async def get_all_donations(donation_service: DonationService = Depends()):
     return await donation_service.get_all_donations()
 
 @router.post("/donations/{donation_id}/verify", response_model=DonationResponse)
-async def verify_donation(donation_id: int, donation_service: DonationService = Depends()):
+async def verify_donation(donation_id: uuid.UUID, donation_service: DonationService = Depends()):
     return await donation_service.verify_donation(donation_id)

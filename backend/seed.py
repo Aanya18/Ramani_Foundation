@@ -5,8 +5,6 @@ import os
 import shutil
 
 async def seed_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
     async with AsyncSessionLocal() as session:
         # Check if admin exists
