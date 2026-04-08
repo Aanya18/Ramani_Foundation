@@ -1,6 +1,12 @@
 import asyncio
+import sys
 import uuid
+from pathlib import Path
 from datetime import datetime, timedelta
+
+# Add parent directory to path so we can import app
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from app.core import AsyncSessionLocal
 from app.models import Donation, Event, GalleryItem, Lead
 

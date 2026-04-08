@@ -1,5 +1,11 @@
 import asyncio
+import sys
+from pathlib import Path
 from sqlalchemy.future import select
+
+# Add parent directory to path so we can import app
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from app.core import AsyncSessionLocal, get_password_hash
 from app.models import AdminUser
 
