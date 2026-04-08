@@ -26,7 +26,6 @@ export default function Donate() {
   const [success, setSuccess] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    // @ts-expect-error Zod version mismatch
     resolver: zodResolver(formSchema),
     defaultValues: {
       donor_name: "",
