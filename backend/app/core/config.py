@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from typing import List, Union
-from pydantic import validator
+from pydantic import validator, Field
 
 class Settings(BaseSettings):
     PROJECT_NAME: str
@@ -27,6 +27,11 @@ class Settings(BaseSettings):
 
     # Database Settings
     DATABASE_URL: str
+    POSTGRES_POOL_SIZE: int = Field(default=10, gt=0)
+    POSTGRES_MAX_OVERFLOW: int = Field(default=20, ge=0)
+    POSTGRES_POOL_TIMEOUT: int = Field(default=30, gt=0)
+    POSTGRES_POOL_RECYCLE: int = Field(default=1800, gt=0)
+    POSTGRES_POOL_PRE_PING: bool = Field(default=True)
 
     # File Uploads
     UPLOADS_DIR: str
