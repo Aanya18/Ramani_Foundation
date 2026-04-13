@@ -1,6 +1,12 @@
 import asyncio
 import uuid
+import os
+import sys
 from datetime import datetime, timedelta
+
+# Add the parent directory (backend/) to sys.path so 'app' can be imported
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from app.core import AsyncSessionLocal
 from app.models import Donation, Event, GalleryItem, Lead
 

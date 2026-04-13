@@ -1,4 +1,10 @@
 import asyncio
+import os
+import sys
+
+# Add the parent directory (backend/) to sys.path so 'app' can be imported
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from sqlalchemy.future import select
 from app.core import AsyncSessionLocal, get_password_hash
 from app.models import AdminUser
