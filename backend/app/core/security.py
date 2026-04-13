@@ -2,17 +2,14 @@ from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 import jwt
 from typing import Optional
-from app.core import settings
+from . import settings
 
 pwd_context = CryptContext(
-    schemes=[
-        (settings.HASHING_SCHEME, {
-            "time_cost": settings.ARGON2_TIME_COST,
-            "memory_cost": settings.ARGON2_MEMORY_COST,
-            "parallelism": settings.ARGON2_PARALLELISM,
-        })
-    ],
-    deprecated="auto"
+    schemes=[settings.HASHING_SCHEME],
+    deprecated="auto",
+    argon2__time_cost=settings.ARGON2_TIME_COST,
+    argon2__memory_cost=settings.ARGON2_MEMORY_COST,
+    argon2__parallelism=settings.ARGON2_PARALLELISM,
 )
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

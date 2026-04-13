@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.core import settings, engine, Base
-from app.api import public_auth_router, public_event_router, public_gallery_router, public_lead_router, public_donation_router, private_event_router, private_gallery_router, private_lead_router, private_donation_router
+from .core import settings, engine, Base
+from .api import public_auth_router, public_event_router, public_gallery_router, public_lead_router, public_donation_router, private_event_router, private_gallery_router, private_lead_router, private_donation_router
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
