@@ -7,3 +7,4 @@ from .routes import public_donation_router
 from .routes import public_event_router
 from .routes import public_gallery_router
 from .routes import public_lead_router
+from .routes import public_images_router

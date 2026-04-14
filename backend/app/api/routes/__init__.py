@@ -7,3 +7,4 @@ from .public import donation_router as public_donation_router
 from .public import event_router as public_event_router
 from .public import gallery_router as public_gallery_router
 from .public import lead_router as public_lead_router
+from .public import images_router as public_images_router

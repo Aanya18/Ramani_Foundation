@@ -12,7 +12,8 @@ class Event(Base):
     description = Column(Text, nullable=False)
     date = Column(String, nullable=False)
     location = Column(String, nullable=False)
-    image_url = Column(String, nullable=True)
+    mega_file_id = Column(String, nullable=True)
+    content_type = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     __table_args__ = (

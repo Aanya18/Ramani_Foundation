@@ -11,7 +11,8 @@ class Donation(Base):
     donor_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     amount = Column(String, nullable=False)
-    proof_image_url = Column(String, nullable=False)
+    mega_file_id = Column(String, nullable=False)
+    content_type = Column(String, nullable=False)
     verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

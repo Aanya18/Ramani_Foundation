@@ -4,18 +4,25 @@ from app.core import get_db, settings
 from app.repository import GalleryRepository
 from app.models import GalleryItem
 from app.schemas import GalleryItemResponse
-from app.utils import save_upload_file
+from app.services.image import ImageService
 import uuid
-import os
 from typing import List
 
 class GalleryService:
     def __init__(self, db: AsyncSession = Depends(get_db)):
         self.gallery_repo = GalleryRepository(db)
+        self.image_service = ImageService()
 
     async def get_all_gallery_items(self) -> List[GalleryItemResponse]:
         gallery_items = await self.gallery_repo.get_all()
-        return [GalleryItemResponse.from_orm(item) for item in gallery_items]
+        return [
+            GalleryItemResponse(
+                id=item.id,
+                title=item.title,
+                image_url=f"{settings.API_V1_STR}/public/images/{item.id}",
+                created_at=item.created_at
+            ) for item in gallery_items
+        ]
 
     async def create_gallery_item(self, title: str, image: UploadFile) -> GalleryItemResponse:
         if not image.filename:
@@ -24,14 +31,19 @@ class GalleryService:
         if image.content_type not in settings.ALLOWED_IMAGE_TYPES:
             raise HTTPException(status_code=400, detail="Invalid image type")
 
-        ext = os.path.splitext(image.filename)[1]
-        filename = f"{uuid.uuid4()}{ext}"
-        filepath = os.path.join(settings.UPLOADS_DIR, filename)
-        await save_upload_file(image, filepath)
+        # Upload to Mega
+        mega_file_id = await self.image_service.upload_image(image)
 
         db_gallery = GalleryItem(
             title=title,
-            image_url=f"/{settings.UPLOADS_DIR}/{filename}"
+            mega_file_id=mega_file_id,
+            content_type=image.content_type
         )
         created_item = await self.gallery_repo.create(db_gallery)
-        return GalleryItemResponse.from_orm(created_item)
+        
+        return GalleryItemResponse(
+            id=created_item.id,
+            title=created_item.title,
+            image_url=f"{settings.API_V1_STR}/public/images/{created_item.id}",
+            created_at=created_item.created_at
+        )

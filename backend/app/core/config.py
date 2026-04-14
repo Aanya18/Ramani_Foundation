@@ -50,6 +50,12 @@ class Settings(BaseSettings):
     # Caching Settings
     CACHE_DIR: str
     DEFAULT_CACHE_EXPIRE_SECONDS: int
+    IMAGE_CACHE_MAX_BYTES: int = Field(default=100 * 1024 * 1024) # 100MB default
+
+    # Mega.nz Settings
+    MEGA_USER: str
+    MEGA_PASSWORD: str
+    MEGA_ROOT_FOLDER: str = Field(default="NGO_UPLOADS")
 
     class Config:
         case_sensitive = True
