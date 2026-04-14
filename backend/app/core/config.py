@@ -27,6 +27,25 @@ class Settings(BaseSettings):
 
     # Database Settings
     DATABASE_URL: str
+    
+    @validator("DATABASE_URL", pre=True)
+    def validate_database_url(cls, v: str) -> str:
+        if v.startswith("postgres://"):
+            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif v.startswith("postgresql://"):
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        
+        # Ensure +asyncpg is present
+        if "postgresql+asyncpg" not in v:
+            v = v.replace("postgresql", "postgresql+asyncpg", 1)
+            
+        # Remove sslmode query param if present, as asyncpg handles SSL via connect_args
+        if "sslmode=" in v:
+            import re
+            v = re.sub(r"[\?&]sslmode=[^&]*", "", v)
+            
+        return v
+
     POSTGRES_POOL_SIZE: int = Field(default=10, gt=0)
     POSTGRES_MAX_OVERFLOW: int = Field(default=20, ge=0)
     POSTGRES_POOL_TIMEOUT: int = Field(default=30, gt=0)

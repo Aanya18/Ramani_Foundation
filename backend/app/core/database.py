@@ -12,6 +12,7 @@ engine = create_async_engine(
     pool_timeout=settings.POSTGRES_POOL_TIMEOUT,
     pool_recycle=settings.POSTGRES_POOL_RECYCLE,
     pool_pre_ping=settings.POSTGRES_POOL_PRE_PING,
+    connect_args={"ssl": True},
 )
 AsyncSessionLocal = async_sessionmaker(
     bind=engine, class_=AsyncSession, expire_on_commit=False
