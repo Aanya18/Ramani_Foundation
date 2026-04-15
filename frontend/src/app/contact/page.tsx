@@ -23,7 +23,6 @@ export default function Contact() {
   const [success, setSuccess] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    // @ts-expect-error Zod version mismatch
     resolver: zodResolver(formSchema),
     defaultValues: {
       type: "contact",

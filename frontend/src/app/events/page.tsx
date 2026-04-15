@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { fetchEvents } from "@/lib/api";
 import { format } from "date-fns";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
