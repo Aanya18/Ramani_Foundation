@@ -31,5 +31,6 @@ app.include_router(private_donation_router, prefix=f"{settings.API_V1_STR}/admin
 
 
 @app.get("/")
+@app.head("/")
 def read_root():
     return {"message": settings.ROOT_MESSAGE}

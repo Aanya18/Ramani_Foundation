@@ -6,7 +6,7 @@ services:
     
     # Build configuration
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1"
     
     # Environment variables
     envVars:
@@ -14,9 +14,12 @@ services:
         value: "3.11"
       - key: ENVIRONMENT
         value: "production"
+      - key: PORT
+        value: "10000"
     
     # Health check
     healthCheckPath: "/"
+    healthCheckStartTimeout: 300
     
     # Auto-deploy
     autoDeploy: true
