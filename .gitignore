@@ -9,3 +9,4 @@ backend/uploads/*
 backend/cache/*
 !backend/cache/.gitkeep
 backend/venv/
+backend/.ven
