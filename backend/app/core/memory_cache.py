@@ -18,6 +18,10 @@ class MemoryCache:
     def set(self, key: str, value: bytes):
         self.cache[key] = value
 
+    def delete(self, key: str):
+        if key in self.cache:
+            del self.cache[key]
+
     def clear(self):
         self.cache.clear()
 

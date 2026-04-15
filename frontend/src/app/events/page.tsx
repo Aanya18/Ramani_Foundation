@@ -1,40 +1,75 @@
 export const dynamic = 'force-dynamic';
 import { fetchEvents } from "@/lib/api";
 import { format } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function Events() {
-  const events = await fetchEvents();
+  const events = await fetchEvents().catch(() => []);
 
   return (
-    <div className="container mx-auto py-16 px-4">
-      <h1 className="text-4xl font-manrope font-bold text-primary mb-12 text-center">Upcoming Events</h1>
-      {events.length === 0 ? (
-        <p className="text-center text-gray-500 font-publicSans">No upcoming events at the moment. Please check back later.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event: { id: number; title: string; date: string; location: string; description: string; image_url: string | null }) => (
-            <div key={event.id} className="bg-white rounded-lg shadow-sm border overflow-hidden flex flex-col">
-              {event.image_url ? (
-                <div className="h-48 bg-gray-200 relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`http://localhost:8000${event.image_url}`} alt={event.title} className="object-cover w-full h-full" />
-                </div>
-              ) : (
-                <div className="h-48 bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary font-manrope font-bold opacity-50">Ramani Foundation Event</span>
-                </div>
-              )}
-              <div className="p-6 flex flex-col flex-grow">
-                <h2 className="text-xl font-manrope font-bold text-primary mb-2">{event.title}</h2>
-                <div className="text-sm text-accent font-publicSans mb-4">
-                  {format(new Date(event.date), 'MMMM d, yyyy')} | {event.location}
-                </div>
-                <p className="text-gray-700 font-publicSans flex-grow">{event.description}</p>
-              </div>
-            </div>
-          ))}
+    <div className="bg-background min-h-screen">
+      {/* Page Header */}
+      <div className="bg-primary text-white py-16 md:py-24 text-center">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Our Events & Initiatives</h1>
+          <p className="text-lg md:text-xl font-publicSans text-primary-foreground/80 max-w-2xl mx-auto">
+            Join hands with us in our upcoming community programs. Together, we can create a lasting impact.
+          </p>
         </div>
-      )}
+      </div>
+
+      <div className="container mx-auto py-16 px-4 lg:px-8">
+        {events.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="text-2xl font-manrope font-bold text-foreground mb-4">No events scheduled right now.</h3>
+            <p className="text-gray-500 font-publicSans mb-8">We are planning something great. Please check back later.</p>
+            <Link href="/contact">
+              <Button className="bg-accent hover:bg-accent/90 text-white">Contact Us for Updates</Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events.map((event: any) => (
+              <div key={event.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-xl transition-shadow duration-300">
+                <div className="h-56 relative overflow-hidden">
+                  {event.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={`http://localhost:8000${event.image_url}`}
+                      alt={event.title}
+                      className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center">
+                      <span className="text-primary font-manrope font-bold opacity-40 uppercase tracking-widest">Ramani Event</span>
+                    </div>
+                  )}
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm text-center min-w-[60px]">
+                    <div className="text-sm font-bold text-primary font-manrope">{format(new Date(event.date), 'dd')}</div>
+                    <div className="text-xs font-bold text-accent uppercase">{format(new Date(event.date), 'MMM')}</div>
+                  </div>
+                </div>
+
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 font-publicSans mb-3">
+                    <span>📍</span>
+                    <span className="truncate">{event.location}</span>
+                  </div>
+                  <h2 className="text-2xl font-manrope font-extrabold text-foreground mb-4 group-hover:text-primary transition-colors">{event.title}</h2>
+                  <p className="text-gray-600 font-publicSans leading-relaxed flex-grow mb-6">{event.description}</p>
+
+                  <Link href={`/gallery?event=${event.id}`} className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-primary font-bold hover:text-accent transition-colors group/link">
+                    <span>View Event Gallery</span>
+                    <span className="transform group-hover/link:translate-x-1 transition-transform">&rarr;</span>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

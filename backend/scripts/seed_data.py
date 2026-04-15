@@ -20,7 +20,8 @@ async def seed_data():
                 description="Join us in making our community cleaner and greener! All volunteers are welcome.",
                 date="2024-07-20",
                 location="City Park, Green Avenue",
-                image_url="/uploads/event_cleanup.jpg",
+                mega_file_id="dummy_id_1",
+                content_type="image/jpeg",
                 created_at=datetime.utcnow() - timedelta(days=10)
             ),
             Event(
@@ -29,7 +30,8 @@ async def seed_data():
                 description="An evening of elegance to raise funds for our educational programs. Dinner and live music.",
                 date="2024-09-15",
                 location="Grand Ballroom, Downtown Hotel",
-                image_url="/uploads/event_gala.jpg",
+                mega_file_id="dummy_id_2",
+                content_type="image/jpeg",
                 created_at=datetime.utcnow() - timedelta(days=20)
             ),
             Event(
@@ -38,7 +40,8 @@ async def seed_data():
                 description="A free workshop for high school students focusing on leadership and skill development.",
                 date="2024-08-05",
                 location="Youth Community Center",
-                image_url=None, # Example with no image
+                mega_file_id=None, # Example with no image
+                content_type=None,
                 created_at=datetime.utcnow() - timedelta(days=5)
             ),
         ]
@@ -50,19 +53,22 @@ async def seed_data():
             GalleryItem(
                 id=uuid.uuid4(),
                 title="Volunteers at work during last cleanup",
-                image_url="/uploads/gallery_cleanup_volunteers.jpg",
+                mega_file_id="dummy_id_3",
+                content_type="image/jpeg",
                 created_at=datetime.utcnow() - timedelta(days=12)
             ),
             GalleryItem(
                 id=uuid.uuid4(),
                 title="Gala 2023 Highlights",
-                image_url="/uploads/gallery_gala_highlights.jpg",
+                mega_file_id="dummy_id_4",
+                content_type="image/jpeg",
                 created_at=datetime.utcnow() - timedelta(days=25)
             ),
              GalleryItem(
                 id=uuid.uuid4(),
                 title="Workshop in Progress",
-                image_url="/uploads/gallery_workshop.jpg",
+                mega_file_id="dummy_id_5",
+                content_type="image/jpeg",
                 created_at=datetime.utcnow() - timedelta(days=6)
             ),
         ]
@@ -76,7 +82,8 @@ async def seed_data():
                 donor_name="John Doe",
                 email="john.doe@example.com",
                 amount="100.00",
-                proof_image_url="/uploads/proof_john.jpg",
+                mega_file_id="dummy_id_6",
+                content_type="image/jpeg",
                 verified=True,
                 created_at=datetime.utcnow() - timedelta(days=3)
             ),
@@ -85,7 +92,8 @@ async def seed_data():
                 donor_name="Jane Smith",
                 email="jane.smith@example.com",
                 amount="50.00",
-                proof_image_url="/uploads/proof_jane.jpg",
+                mega_file_id="dummy_id_7",
+                content_type="image/jpeg",
                 verified=False,
                 created_at=datetime.utcnow() - timedelta(days=1)
             ),

@@ -20,3 +20,22 @@ async def create_event(
     event_service: EventService = Depends()
 ):
     return await event_service.create_event(title, description, date, location, image)
+
+@router.put("/events/{event_id}", response_model=EventResponse)
+async def update_event(
+    event_id: str,
+    title: str = Form(...),
+    description: str = Form(...),
+    date: str = Form(...),
+    location: str = Form(...),
+    image: UploadFile = File(None),
+    event_service: EventService = Depends()
+):
+    return await event_service.update_event(event_id, title, description, date, location, image)
+
+@router.delete("/events/{event_id}", status_code=204)
+async def delete_event(
+    event_id: str,
+    event_service: EventService = Depends()
+):
+    await event_service.delete_event(event_id)

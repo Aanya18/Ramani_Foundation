@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, Text, DateTime, Index
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core import Base
 
@@ -15,6 +16,8 @@ class Event(Base):
     mega_file_id = Column(String, nullable=True)
     content_type = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    gallery_items = relationship("GalleryItem", back_populates="event", cascade="all, delete-orphan")
 
     __table_args__ = (
         Index('idx_events_created_at', 'created_at'),

@@ -119,3 +119,27 @@ class ImageService:
             except Exception as e2:
                 logger.error(f"Retry download failed: {e2}")
                 raise HTTPException(status_code=404, detail="Image not found in cloud storage")
+
+    async def delete_image(self, mega_file_id: str) -> None:
+        mega, _ = await mega_manager.get_client()
+
+        async def _delete(client, node_id):
+            fs = await client.get_filesystem()
+            node = fs.nodes.get(node_id)
+            if node:
+                await client.destroy(node)
+
+        try:
+            await _delete(mega, mega_file_id)
+        except Exception as e:
+            logger.error(f"Delete from Mega failed: {e}")
+            try:
+                mega, _ = await mega_manager.refresh_session()
+                await _delete(mega, mega_file_id)
+            except Exception as e2:
+                logger.error(f"Retry delete failed: {e2}")
+                # We log it but do not necessarily raise an error to not block the main entity deletion,
+                # or we can raise depending on strictness.
+                pass
+        finally:
+            image_cache.delete(mega_file_id)

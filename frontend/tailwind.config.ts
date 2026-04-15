@@ -10,27 +10,27 @@ const config: Config = {
   theme: {
 	extend: {
 		colors: {
-			background: '#f9f9f9',
-			foreground: 'hsl(var(--foreground))',
+			background: '#FDFBF7', // Warmer, softer off-white for a more trustworthy feel
+			foreground: '#2C3E38', // Dark slate/green for text, easier on eyes than pure black
 			primary: {
-				DEFAULT: '#00483c',
-				foreground: 'hsl(var(--primary-foreground))'
+				DEFAULT: '#00574B', // Slightly deeper, richer green for stability/nature
+				foreground: '#FFFFFF'
 			},
 			accent: {
-				DEFAULT: '#ff8f00',
-				foreground: 'hsl(var(--accent-foreground))'
+				DEFAULT: '#E67E22', // A warm, professional orange/amber for energy/action
+				foreground: '#FFFFFF'
 			},
 			card: {
-				DEFAULT: 'hsl(var(--card))',
-				foreground: 'hsl(var(--card-foreground))'
+				DEFAULT: '#FFFFFF',
+				foreground: '#2C3E38'
 			},
 			popover: {
-				DEFAULT: 'hsl(var(--popover))',
-				foreground: 'hsl(var(--popover-foreground))'
+				DEFAULT: '#FFFFFF',
+				foreground: '#2C3E38'
 			},
 			secondary: {
-				DEFAULT: '#8f4e00',
-				foreground: 'hsl(var(--secondary-foreground))'
+				DEFAULT: '#D35400', // Deeper terracotta for secondary elements
+				foreground: '#FFFFFF'
 			},
 			muted: {
 				DEFAULT: 'hsl(var(--muted))',

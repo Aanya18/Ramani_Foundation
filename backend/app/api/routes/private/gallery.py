@@ -14,6 +14,24 @@ async def get_all_gallery(gallery_service: GalleryService = Depends()):
 async def create_gallery_item(
     title: str = Form(...),
     image: UploadFile = File(...),
+    event_id: str = Form(None),
     gallery_service: GalleryService = Depends()
 ):
-    return await gallery_service.create_gallery_item(title, image)
+    return await gallery_service.create_gallery_item(title, image, event_id)
+
+@router.put("/gallery/{item_id}", response_model=GalleryItemResponse)
+async def update_gallery_item(
+    item_id: str,
+    title: str = Form(...),
+    image: UploadFile = File(None),
+    event_id: str = Form(None),
+    gallery_service: GalleryService = Depends()
+):
+    return await gallery_service.update_gallery_item(item_id, title, image, event_id)
+
+@router.delete("/gallery/{item_id}", status_code=204)
+async def delete_gallery_item(
+    item_id: str,
+    gallery_service: GalleryService = Depends()
+):
+    await gallery_service.delete_gallery_item(item_id)
