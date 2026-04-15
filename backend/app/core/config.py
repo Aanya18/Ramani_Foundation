@@ -71,6 +71,10 @@ class Settings(BaseSettings):
     DEFAULT_CACHE_EXPIRE_SECONDS: int
     IMAGE_CACHE_MAX_BYTES: int = Field(default=100 * 1024 * 1024) # 100MB default
 
+    # Server Settings
+    PORT: int = Field(default=8000, description="Server port")
+    HOST: str = Field(default="0.0.0.0", description="Server host")
+    
     # Mega.nz Settings
     MEGA_USER: str
     MEGA_PASSWORD: str
