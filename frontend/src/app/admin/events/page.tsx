@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { API_URL } from "@/lib/api";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function AdminEvents() {
@@ -25,7 +26,7 @@ export default function AdminEvents() {
 
   const fetchEvents = async () => {
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/events`, {
+    const res = await fetch(`${API_URL}/admin/events`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (res.ok) {
@@ -46,7 +47,7 @@ export default function AdminEvents() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/events/${id}`, {
+    const res = await fetch(`${API_URL}/admin/events/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -68,8 +69,8 @@ export default function AdminEvents() {
     if (image) formData.append("image", image);
 
     const url = editingId
-      ? `${process.env.NEXT_PUBLIC_API_URL}/admin/events/${editingId}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/admin/events`;
+      ? `${API_URL}/admin/events/${editingId}`
+      : `${API_URL}/admin/events`;
 
     const method = editingId ? "PUT" : "POST";
 

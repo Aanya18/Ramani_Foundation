@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { API_URL } from "@/lib/api";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -20,10 +21,10 @@ export default function AdminDashboard() {
 
       try {
         const [events, gallery, leads, donations] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/events`, { headers }).then(r => r.json()),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/gallery`, { headers }).then(r => r.json()),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/leads`, { headers }).then(r => r.json()),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/donations`, { headers }).then(r => r.json())
+          fetch(`${API_URL}/admin/events`, { headers }).then(r => r.json()),
+          fetch(`${API_URL}/admin/gallery`, { headers }).then(r => r.json()),
+          fetch(`${API_URL}/admin/leads`, { headers }).then(r => r.json()),
+          fetch(`${API_URL}/admin/donations`, { headers }).then(r => r.json())
         ]);
 
         setStats({

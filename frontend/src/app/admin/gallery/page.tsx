@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { mediaUrl } from "@/lib/api";
+import { API_URL, mediaUrl } from "@/lib/api";
 
 export default function AdminGallery() {
   const [items, setItems] = useState([]);
@@ -24,7 +24,7 @@ export default function AdminGallery() {
 
   const fetchGallery = async () => {
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/gallery`, {
+    const res = await fetch(`${API_URL}/admin/gallery`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (res.ok) setItems(await res.json());
@@ -32,7 +32,7 @@ export default function AdminGallery() {
 
   const fetchEvents = async () => {
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/events`, {
+    const res = await fetch(`${API_URL}/admin/events`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (res.ok) setEvents(await res.json());
@@ -49,7 +49,7 @@ export default function AdminGallery() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this image?")) return;
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/gallery/${id}`, {
+    const res = await fetch(`${API_URL}/admin/gallery/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -71,8 +71,8 @@ export default function AdminGallery() {
     if (image) formData.append("image", image);
 
     const url = editingId
-      ? `${process.env.NEXT_PUBLIC_API_URL}/admin/gallery/${editingId}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/admin/gallery`;
+      ? `${API_URL}/admin/gallery/${editingId}`
+      : `${API_URL}/admin/gallery`;
 
     const method = editingId ? "PUT" : "POST";
 

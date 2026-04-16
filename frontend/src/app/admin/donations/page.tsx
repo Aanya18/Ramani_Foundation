@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
-import { mediaUrl } from "@/lib/api";
+import { API_URL, mediaUrl } from "@/lib/api";
 
 export default function AdminDonations() {
   const [donations, setDonations] = useState([]);
@@ -14,7 +14,7 @@ export default function AdminDonations() {
 
   const fetchDonations = async () => {
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/donations`, {
+    const res = await fetch(`${API_URL}/admin/donations`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (res.ok) setDonations(await res.json());
@@ -22,7 +22,7 @@ export default function AdminDonations() {
 
   const handleVerify = async (id: number) => {
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/donations/${id}/verify`, {
+    const res = await fetch(`${API_URL}/admin/donations/${id}/verify`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` }
     });

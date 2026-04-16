@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { API_URL } from "@/lib/api";
 
 export default function AdminLeads() {
   const [leads, setLeads] = useState([]);
@@ -9,7 +10,7 @@ export default function AdminLeads() {
   useEffect(() => {
     const fetchLeads = async () => {
       const token = Cookies.get("admin_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/leads`, {
+      const res = await fetch(`${API_URL}/admin/leads`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) setLeads(await res.json());

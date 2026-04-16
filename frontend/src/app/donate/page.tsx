@@ -7,6 +7,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { API_URL } from "@/lib/api";
 
 const formSchema = z.object({
   donor_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -43,7 +44,7 @@ export default function Donate() {
       formData.append("amount", values.amount);
       formData.append("proof_image", values.proof_image[0]);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/donations`, {
+      const res = await fetch(`${API_URL}/public/donations`, {
         method: "POST",
         body: formData,
       });

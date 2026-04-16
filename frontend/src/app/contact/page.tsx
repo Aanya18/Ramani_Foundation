@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { API_URL } from "@/lib/api";
 
 const formSchema = z.object({
   type: z.string().min(1, "Please select an inquiry type"),
@@ -36,7 +37,7 @@ export default function Contact() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/leads`, {
+      const res = await fetch(`${API_URL}/public/leads`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
