@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic';
-import { fetchGallery } from "@/lib/api";
+import { fetchGallery, mediaUrl } from "@/lib/api";
 
 export default async function Gallery({ searchParams }: { searchParams: { event?: string } }) {
   const items = await fetchGallery().catch(() => []);
@@ -76,7 +76,7 @@ function GallerySection({ title, items }: { title: string, items: any[] }) {
           <div key={item.id} className="group relative aspect-square bg-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`http://localhost:8000${item.image_url}`}
+              src={mediaUrl(item.image_url)}
               alt={item.title}
               className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
             />

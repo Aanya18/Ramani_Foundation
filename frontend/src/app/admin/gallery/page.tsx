@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { mediaUrl } from "@/lib/api";
 
 export default function AdminGallery() {
   const [items, setItems] = useState([]);
@@ -140,7 +141,7 @@ export default function AdminGallery() {
           <div key={item.id} className="bg-white rounded-lg shadow-sm border p-2 flex flex-col justify-between group relative overflow-hidden">
             <div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`http://localhost:8000${item.image_url}`} alt={item.title} className="w-full h-32 object-cover rounded mb-2 transition-transform duration-300 group-hover:scale-105" />
+              <img src={mediaUrl(item.image_url)} alt={item.title} className="w-full h-32 object-cover rounded mb-2 transition-transform duration-300 group-hover:scale-105" />
               <p className="font-publicSans text-sm truncate font-medium mb-1">{item.title}</p>
               {item.event_title && (
                  <p className="font-publicSans text-xs text-gray-500 truncate mb-2">Event: {item.event_title}</p>

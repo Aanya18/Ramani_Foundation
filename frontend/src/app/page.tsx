@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { fetchEvents, fetchGallery } from "@/lib/api";
+import { fetchEvents, fetchGallery, mediaUrl } from "@/lib/api";
 import { format } from "date-fns";
 
 export const dynamic = 'force-dynamic';
@@ -134,7 +134,7 @@ export default async function Home() {
                   {event.image_url ? (
                     <div className="h-48 relative">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`http://localhost:8000${event.image_url}`} alt={event.title} className="object-cover w-full h-full" />
+                      <img src={mediaUrl(event.image_url)} alt={event.title} className="object-cover w-full h-full" />
                     </div>
                   ) : (
                     <div className="h-48 bg-primary/10 flex items-center justify-center">
@@ -173,7 +173,7 @@ export default async function Home() {
                {galleryPreview.map((item: any, idx: number) => (
                  <div key={item.id} className={`relative overflow-hidden rounded-lg shadow-sm group ${idx === 0 ? 'w-full md:w-2/3 h-64 md:h-96' : 'w-[45%] md:w-[23%] h-40 md:h-64'}`}>
                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                   <img src={`http://localhost:8000${item.image_url}`} alt={item.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" />
+                   <img src={mediaUrl(item.image_url)} alt={item.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" />
                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                      <p className="text-white font-manrope font-bold text-sm text-left line-clamp-2">{item.title}</p>
                    </div>

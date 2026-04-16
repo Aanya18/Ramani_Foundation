@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic';
-import { fetchEvents } from "@/lib/api";
+import { fetchEvents, mediaUrl } from "@/lib/api";
 import { format } from "date-fns";
 import Link from "next/link";
 import Image from "next/image";
@@ -37,7 +37,7 @@ export default async function Events() {
                   {event.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={`http://localhost:8000${event.image_url}`}
+                      src={mediaUrl(event.image_url)}
                       alt={event.title}
                       className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
                     />

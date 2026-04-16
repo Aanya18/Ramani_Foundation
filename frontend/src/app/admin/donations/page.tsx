@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
+import { mediaUrl } from "@/lib/api";
 
 export default function AdminDonations() {
   const [donations, setDonations] = useState([]);
@@ -54,7 +55,7 @@ export default function AdminDonations() {
                 <td className="p-4">{donation.email}</td>
                 <td className="p-4">{donation.amount}</td>
                 <td className="p-4">
-                  <a href={`http://localhost:8000${donation.proof_image_url}`} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                  <a href={mediaUrl(donation.proof_image_url)} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
                     View Proof
                   </a>
                 </td>

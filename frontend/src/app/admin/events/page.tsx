@@ -33,7 +33,7 @@ export default function AdminEvents() {
     }
   };
 
-  const handleEdit = (event: any) => {
+  const handleEdit = (event: { id: string; title: string; description: string; date: string; location: string }) => {
     setIsAdding(true);
     setEditingId(event.id);
     setTitle(event.title);
