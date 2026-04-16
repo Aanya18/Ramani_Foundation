@@ -1,17 +1,20 @@
 /** Must match backend `API_V1_STR` (see FastAPI `main.py`). */
 const API_V1_PREFIX = "/api/v1";
+const backendOrigin = process.env.NEXT_PUBLIC_API_URL?.trim();
 
-/**
- * Frontend always talks to its own origin. `next.config.mjs` rewrites `/api/*`
- * to the real backend, which avoids leaking a browser-side localhost fallback
- * into production builds.
- */
-export const API_URL = API_V1_PREFIX;
+if (!backendOrigin) {
+  throw new Error("NEXT_PUBLIC_API_URL is required");
+}
+
+const BACKEND_ORIGIN = backendOrigin.replace(/\/+$/, "");
+
+export const API_URL = `${BACKEND_ORIGIN}${API_V1_PREFIX}`;
 
 export function mediaUrl(path: string | null | undefined): string {
   if (!path) return "";
   if (/^https?:\/\//i.test(path)) return path;
-  return path.startsWith("/") ? path : `/${path}`;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${BACKEND_ORIGIN}${normalizedPath}`;
 }
 
 export async function fetchEvents() {
