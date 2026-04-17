@@ -10,3 +10,4 @@ backend/cache/*
 !backend/cache/.gitkeep
 backend/venv/
 backend/.ven
+node_modules/

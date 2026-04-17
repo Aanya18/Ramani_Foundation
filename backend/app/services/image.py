@@ -127,7 +127,7 @@ class ImageService:
             fs = await client.get_filesystem()
             node = fs.nodes.get(node_id)
             if node:
-                await client.destroy(node)
+                await client.destroy(node.id)
 
         try:
             await _delete(mega, mega_file_id)
