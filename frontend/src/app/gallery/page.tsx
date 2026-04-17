@@ -1,17 +1,18 @@
 export const dynamic = 'force-dynamic';
-import { fetchGallery, mediaUrl } from "@/lib/api";
+import { fetchGallery, mediaUrl, type GalleryItem } from "@/lib/api";
 
 export default async function Gallery({ searchParams }: { searchParams: { event?: string } }) {
-  const items = await fetchGallery().catch(() => []);
+  const items: GalleryItem[] = await fetchGallery().catch(() => []);
 
   // Group items by event_id
-  const generalImages = items.filter((item: any) => !item.event_id);
-  const groupedByEvent = items.reduce((acc: any, item: any) => {
+  const generalImages = items.filter((item) => !item.event_id);
+  const groupedByEvent = items.reduce<Record<string, { title: string; items: GalleryItem[] }>>((acc, item) => {
     if (item.event_id) {
-      if (!acc[item.event_id]) {
-        acc[item.event_id] = { title: item.event_title || 'Unknown Event', items: [] };
+      const eventKey = String(item.event_id);
+      if (!acc[eventKey]) {
+        acc[eventKey] = { title: item.event_title || 'Unknown Event', items: [] };
       }
-      acc[item.event_id].items.push(item);
+      acc[eventKey].items.push(item);
     }
     return acc;
   }, {});
@@ -21,12 +22,14 @@ export default async function Gallery({ searchParams }: { searchParams: { event?
   return (
     <div className="bg-background min-h-screen">
       {/* Page Header */}
-      <div className="bg-primary text-white py-16 md:py-24 text-center">
+      <div className="bg-gradient-to-br from-primary to-secondary text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Our Impact Gallery</h1>
-          <p className="text-lg md:text-xl font-publicSans text-primary-foreground/80 max-w-2xl mx-auto">
-            A visual journey of our efforts, community gatherings, and the smiles we've helped create.
-          </p>
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Our Impact Gallery</h1>
+            <p className="text-lg md:text-xl font-publicSans text-white/85 leading-relaxed">
+              A visual journey of our efforts, community gatherings, and the smiles we have helped create.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -49,7 +52,7 @@ export default async function Gallery({ searchParams }: { searchParams: { event?
                 )}
 
                 {/* Event-specific Images */}
-                {Object.values(groupedByEvent).map((group: any, idx: number) => (
+                {Object.values(groupedByEvent).map((group, idx) => (
                   <GallerySection key={idx} title={group.title} items={group.items} />
                 ))}
               </>
@@ -61,7 +64,7 @@ export default async function Gallery({ searchParams }: { searchParams: { event?
   );
 }
 
-function GallerySection({ title, items }: { title: string, items: any[] }) {
+function GallerySection({ title, items }: { title: string, items: GalleryItem[] }) {
   return (
     <div className="space-y-6">
       <div className="border-b-2 border-primary/20 pb-4 mb-8">
@@ -72,7 +75,7 @@ function GallerySection({ title, items }: { title: string, items: any[] }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {items.map((item: any) => (
+        {items.map((item) => (
           <div key={item.id} className="group relative aspect-square bg-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

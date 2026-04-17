@@ -57,19 +57,25 @@ export default function Contact() {
   }
 
   return (
-    <div className="container mx-auto py-16 px-4 max-w-2xl">
-      <h1 className="text-4xl font-manrope font-bold text-primary mb-8 text-center">Contact Us</h1>
-      <p className="text-center text-gray-600 mb-8 font-publicSans">Whether you have a question, want to volunteer, or just want to say hi, we&apos;d love to hear from you.</p>
-
-      {success ? (
-        <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg text-center font-publicSans">
-          <h3 className="text-xl font-bold mb-2">Thank You!</h3>
-          <p>Your message has been received. We will get back to you shortly.</p>
-          <Button className="mt-4" onClick={() => setSuccess(false)}>Send another message</Button>
-        </div>
-      ) : (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-8 rounded-lg shadow-sm border border-border">
+    <div className="bg-background min-h-screen py-20">
+      <div className="container mx-auto px-4 max-w-3xl">
+        <div className="rounded-[2rem] bg-white shadow-2xl border border-slate-200/80 overflow-hidden">
+          <div className="bg-gradient-to-br from-primary to-secondary px-8 py-12 text-white">
+            <h1 className="text-4xl font-manrope font-bold mb-4">Contact Us</h1>
+            <p className="text-lg text-white/90 max-w-2xl">
+              Whether you have a question, want to volunteer, or just want to say hi, we&apos;d love to hear from you.
+            </p>
+          </div>
+          <div className="p-8">
+            {success ? (
+              <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg text-center font-publicSans">
+                <h3 className="text-xl font-bold mb-2">Thank You!</h3>
+                <p>Your message has been received. We will get back to you shortly.</p>
+                <Button className="mt-4" onClick={() => setSuccess(false)}>Send another message</Button>
+              </div>
+            ) : (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-8 rounded-lg shadow-sm border border-border">
             <FormField
               control={form.control}
               name="type"
@@ -151,6 +157,9 @@ export default function Contact() {
           </form>
         </Form>
       )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

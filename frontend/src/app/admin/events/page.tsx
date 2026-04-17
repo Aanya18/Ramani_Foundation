@@ -5,11 +5,11 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { API_URL } from "@/lib/api";
+import { API_URL, type Event } from "@/lib/api";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function AdminEvents() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -34,20 +34,20 @@ export default function AdminEvents() {
     }
   };
 
-  const handleEdit = (event: { id: string; title: string; description: string; date: string; location: string }) => {
+  const handleEdit = (event: Event) => {
     setIsAdding(true);
-    setEditingId(event.id);
+    setEditingId(String(event.id));
     setTitle(event.title);
     setDescription(event.description);
     setDate(event.date);
-    setLocation(event.location);
+    setLocation(event.location ?? "");
     setImage(null);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     const token = Cookies.get("admin_token");
-    const res = await fetch(`${API_URL}/admin/events/${id}`, {
+    const res = await fetch(`${API_URL}/admin/events/${String(id)}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -147,7 +147,7 @@ export default function AdminEvents() {
             </tr>
           </thead>
           <tbody>
-            {events.map((event: any) => (
+            {events.map((event) => (
               <tr key={event.id} className="border-b border-border last:border-0 hover:bg-gray-50">
                 <td className="p-4">{event.title}</td>
                 <td className="p-4">{event.date}</td>

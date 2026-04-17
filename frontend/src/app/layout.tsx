@@ -1,8 +1,8 @@
+// app/layout.tsx (Server Component - Updated)
 import type { Metadata } from "next";
 import { Manrope, Public_Sans } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
-import Image from "next/image";
+import Navbar from "@/components/Navbar";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -26,8 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${publicSans.variable} font-publicSans bg-background text-foreground antialiased min-h-screen flex flex-col`}>
-        {/* Top bar for extra trust info */}
+      <body
+        className={`${manrope.variable} ${publicSans.variable} font-publicSans bg-background text-foreground antialiased min-h-screen flex flex-col`}
+      >
+        {/* Top bar - static */}
         <div className="bg-primary-foreground/5 py-2 hidden md:block border-b border-primary/10">
           <div className="container mx-auto flex justify-end items-center text-sm font-publicSans text-primary px-4 lg:px-8 space-x-6">
             <span>📞 +91 98765 43210</span>
@@ -35,81 +37,99 @@ export default function RootLayout({
           </div>
         </div>
 
-        <header className="bg-white text-primary shadow-sm sticky top-0 z-50">
-          <div className="container mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
-            <Link href="/" className="flex items-center gap-3">
-              <Image src="/logo.jpg" alt="Ramani Foundation Logo" width={48} height={48} className="rounded-full object-cover border border-primary/10" />
-              <div className="flex flex-col">
-                <span className="font-manrope text-2xl font-extrabold tracking-tight">Ramani Foundation</span>
-                <span className="text-xs font-publicSans text-secondary font-medium tracking-wide uppercase">Empowering Lives</span>
-              </div>
-            </Link>
-            <nav className="hidden lg:flex items-center space-x-8 font-publicSans font-medium">
-              <Link href="/" className="hover:text-accent transition-colors">Home</Link>
-              <Link href="/about" className="hover:text-accent transition-colors">About</Link>
-              <Link href="/events" className="hover:text-accent transition-colors">Events</Link>
-              <Link href="/gallery" className="hover:text-accent transition-colors">Gallery</Link>
-              <Link href="/contact" className="hover:text-accent transition-colors">Contact</Link>
-            </nav>
-            <div className="hidden lg:flex items-center gap-4">
-              <Link href="/donate" className="bg-accent text-white px-6 py-2.5 rounded-full font-bold hover:bg-accent/90 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                Donate Now
-              </Link>
-            </div>
-            {/* Mobile Nav could be added here */}
-          </div>
-        </header>
+        {/* Client-side Navbar with active highlighting & mobile menu */}
+        <Navbar />
 
-        <main className="flex-grow">
-          {children}
-        </main>
+        <main className="flex-grow">{children}</main>
 
-        <footer className="bg-[#1A2521] text-white pt-16 pb-8 mt-auto">
-          <div className="container mx-auto px-4 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12 font-publicSans">
-            <div className="md:col-span-1 lg:col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                 <Image src="/logo.jpg" alt="Ramani Foundation Logo" width={40} height={40} className="rounded-full object-cover bg-white" />
-                 <h3 className="font-manrope text-2xl font-bold tracking-tight">Ramani Foundation</h3>
+        <footer className="bg-[#0d343d] text-white pt-16 pb-8 mt-auto">
+          <div className="container mx-auto px-4 lg:px-8 grid grid-cols-1 xl:grid-cols-12 gap-10">
+            <div className="xl:col-span-5">
+              <div className="flex items-center gap-3 mb-5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo.jpg"
+                  alt="Ramani Foundation Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-full object-cover bg-white"
+                />
+                <div>
+                  <h3 className="font-manrope text-2xl font-bold tracking-tight">
+                    Ramani Foundation
+                  </h3>
+                  <p className="text-sm text-slate-300">
+                    Building resilient communities through education, healthcare,
+                    and livelihood support.
+                  </p>
+                </div>
               </div>
-              <p className="text-base text-gray-300 leading-relaxed mb-6 max-w-md">
-                We are a non-profit organization dedicated to empowering underprivileged communities across India through education, sustainable livelihoods, and healthcare access.
+              <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
+                Our team works closely with local partners to deliver measurable
+                impact. We welcome your support, partnership, and collaboration
+                as we scale our work across India.
               </p>
             </div>
 
-            <div>
-              <h3 className="font-manrope text-xl font-bold mb-6 text-accent">Quick Links</h3>
-              <ul className="space-y-3 text-base text-gray-300">
-                <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="/events" className="hover:text-white transition-colors">Upcoming Events</Link></li>
-                <li><Link href="/gallery" className="hover:text-white transition-colors">Our Impact Gallery</Link></li>
-                <li><Link href="/admin" className="hover:text-white transition-colors">Admin Portal</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-manrope text-xl font-bold mb-6 text-accent">Get in Touch</h3>
-              <ul className="space-y-3 text-base text-gray-300">
-                <li className="flex items-start gap-3">
-                  <span className="mt-1">📍</span>
-                  <span>123 NGO Lane, NGO Hub, New Delhi, India</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span>📞</span>
-                  <span>+91 98765 43210</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span>✉️</span>
-                  <span>info@ramanifoundation.org</span>
-                </li>
-              </ul>
+            <div className="grid grid-cols-2 gap-8 xl:col-span-7">
+              <div>
+                <h3 className="font-manrope text-xl font-bold mb-5 text-accent">
+                  Quick Links
+                </h3>
+                <ul className="space-y-3 text-sm text-slate-300">
+                  <li>
+                    <a href="/about" className="transition hover:text-white">
+                      About Us
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/events" className="transition hover:text-white">
+                      Upcoming Events
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/gallery" className="transition hover:text-white">
+                      Impact Gallery
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/donate" className="transition hover:text-white">
+                      Donate
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-manrope text-xl font-bold mb-5 text-accent">
+                  Contact
+                </h3>
+                <ul className="space-y-3 text-sm text-slate-300">
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1">📍</span>
+                    <span>123 NGO Lane, NGO Hub, New Delhi, India</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span>📞</span>
+                    <span>+91 98765 43210</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span>✉️</span>
+                    <span>info@ramanifoundation.org</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
-          <div className="container mx-auto px-4 lg:px-8 mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+          <div className="container mx-auto px-4 lg:px-8 mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
             <p>&copy; {new Date().getFullYear()} Ramani Foundation. All rights reserved.</p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <div className="flex flex-wrap items-center gap-4">
+              <a href="/privacy" className="transition hover:text-white">
+                Privacy Policy
+              </a>
+              <a href="/terms" className="transition hover:text-white">
+                Terms of Service
+              </a>
             </div>
           </div>
         </footer>

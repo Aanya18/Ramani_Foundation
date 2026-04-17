@@ -5,11 +5,11 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { API_URL, mediaUrl } from "@/lib/api";
+import { API_URL, mediaUrl, type Event, type GalleryItem } from "@/lib/api";
 
 export default function AdminGallery() {
-  const [items, setItems] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -38,11 +38,11 @@ export default function AdminGallery() {
     if (res.ok) setEvents(await res.json());
   };
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: GalleryItem) => {
     setIsAdding(true);
-    setEditingId(item.id);
+    setEditingId(String(item.id));
     setTitle(item.title);
-    setEventId(item.event_id || "");
+    setEventId(item.event_id ? String(item.event_id) : "");
     setImage(null);
   };
 
@@ -123,8 +123,8 @@ export default function AdminGallery() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">None</option>
-              {events.map((evt: any) => (
-                <option key={evt.id} value={evt.id}>{evt.title}</option>
+              {events.map((evt) => (
+                <option key={evt.id} value={String(evt.id)}>{evt.title}</option>
               ))}
             </select>
           </div>
@@ -137,7 +137,7 @@ export default function AdminGallery() {
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {items.map((item: any) => (
+        {items.map((item) => (
           <div key={item.id} className="bg-white rounded-lg shadow-sm border p-2 flex flex-col justify-between group relative overflow-hidden">
             <div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -149,7 +149,7 @@ export default function AdminGallery() {
             </div>
             <div className="flex justify-between items-center mt-2 border-t pt-2 border-border">
               <Button variant="ghost" size="sm" onClick={() => handleEdit(item)} className="text-primary h-8 px-2">Edit</Button>
-              <Button variant="ghost" size="sm" onClick={() => handleDelete(item.id)} className="text-destructive hover:bg-destructive hover:text-white h-8 px-2">Delete</Button>
+              <Button variant="ghost" size="sm" onClick={() => handleDelete(String(item.id))} className="text-destructive hover:bg-destructive hover:text-white h-8 px-2">Delete</Button>
             </div>
           </div>
         ))}

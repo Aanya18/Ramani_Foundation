@@ -2,48 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 98%;
-    --foreground: 222.2 84% 4.9%;
+:root {
+  --background: 192 77% 97%;
+  --foreground: 194 22% 17%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 194 22% 17%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 194 22% 17%;
 
-    --primary: 170 100% 14%; /* #00483c */
-    --primary-foreground: 210 40% 98%;
+  --primary: 172 70% 49%; /* #38B2AC */
+  --primary-foreground: 0 0% 100%;
 
-    --secondary: 33 100% 28%; /* #8f4e00 */
-    --secondary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 207 77% 47%; /* #3182CE */
+  --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 175 84% 45%; /* #20C7D6 */
+  --accent-foreground: 0 0% 100%;
 
-    --accent: 34 100% 50%; /* #ff8f00 */
-    --accent-foreground: 210 40% 98%;
+  --muted: 210 35% 93%;
+  --muted-foreground: 211 14% 32%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+  --destructive: 356 80% 56%;
+  --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 170 100% 14%;
+  --border: 205 32% 90%;
+  --input: 205 40% 93%;
+  --ring: 172 70% 55%;
 
-    --radius: 0.5rem;
-  }
+  --radius: 0.75rem;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-manrope font-bold;
-  }
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-manrope), sans-serif;
+  font-weight: 700;
 }

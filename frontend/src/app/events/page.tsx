@@ -1,22 +1,23 @@
 export const dynamic = 'force-dynamic';
-import { fetchEvents, mediaUrl } from "@/lib/api";
+import { fetchEvents, mediaUrl, type Event } from "@/lib/api";
 import { format } from "date-fns";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 export default async function Events() {
-  const events = await fetchEvents().catch(() => []);
+  const events: Event[] = await fetchEvents().catch(() => []);
 
   return (
     <div className="bg-background min-h-screen">
       {/* Page Header */}
-      <div className="bg-primary text-white py-16 md:py-24 text-center">
+      <div className="bg-gradient-to-br from-primary to-secondary text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Our Events & Initiatives</h1>
-          <p className="text-lg md:text-xl font-publicSans text-primary-foreground/80 max-w-2xl mx-auto">
-            Join hands with us in our upcoming community programs. Together, we can create a lasting impact.
-          </p>
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Our Events & Initiatives</h1>
+            <p className="text-lg md:text-xl font-publicSans text-white/85 leading-relaxed">
+              Join hands with us in programs designed to strengthen communities through education, health, and youth empowerment.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -31,7 +32,7 @@ export default async function Events() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event: any) => (
+            {events.map((event) => (
               <div key={event.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-xl transition-shadow duration-300">
                 <div className="h-56 relative overflow-hidden">
                   {event.image_url ? (

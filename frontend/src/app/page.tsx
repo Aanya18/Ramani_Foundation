@@ -1,219 +1,259 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { fetchEvents, fetchGallery, mediaUrl } from "@/lib/api";
+import { fetchEvents, fetchGallery, mediaUrl, type Event, type GalleryItem } from "@/lib/api";
 import { format } from "date-fns";
+import HeroSection from "@/components/HeroSection";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  // Fetch data for previews
-  const allEvents = await fetchEvents().catch(() => []);
+  const allEvents: Event[] = await fetchEvents().catch(() => []);
   const upcomingEvents = allEvents.slice(0, 4);
 
-  const allGallery = await fetchGallery().catch(() => []);
+  const allGallery: GalleryItem[] = await fetchGallery().catch(() => []);
   const galleryPreview = allGallery.slice(0, 5);
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative w-full h-[600px] md:h-[700px] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero-community.jpg"
-            alt="Community empowerment"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-primary/70 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent"></div>
-        </div>
+     
+      <HeroSection />
 
-        <div className="container relative z-10 mx-auto px-4 lg:px-8 text-white">
-          <div className="max-w-2xl">
-            <span className="inline-block py-1 px-3 rounded-full bg-accent/90 text-sm font-bold tracking-wider mb-6 font-publicSans">
-              EMPOWERING INDIA
-            </span>
-            <h1 className="text-4xl md:text-6xl font-manrope font-extrabold mb-6 leading-tight">
-              Building Stronger Communities Together.
-            </h1>
-            <p className="text-lg md:text-xl font-publicSans mb-8 text-gray-100 leading-relaxed">
-              Join the Ramani Foundation in our mission to provide sustainable education, holistic healthcare, and community-driven development to those who need it most.
+      {/* Mission Statement Section */}
+      <section className="relative py-20 px-4 bg-background">
+        <div className="container mx-auto px-4 lg:px-8 text-center max-w-4xl">
+          <div className="flex justify-center mb-6">
+            <span className="text-4xl">💝</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-manrope font-extrabold text-foreground mb-12">
+            Mission Statement
+          </h2>
+          <div className="space-y-8">
+            <p className="text-lg text-slate-600 leading-relaxed">
+              <strong>Ramani Foundation</strong> is a 501(c)(3) nonprofit driven to empower, facilitate and deliver knowledge and guidance for the organization's enrichment of the early childhood environment.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/donate">
-                <Button className="w-full sm:w-auto bg-accent text-white hover:bg-accent/90 shadow-lg px-8 py-6 text-lg font-bold" size="lg">
-                  Support Our Cause
-                </Button>
-              </Link>
-              <Link href="/about">
-                <Button variant="outline" className="w-full sm:w-auto bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-6 text-lg font-bold" size="lg">
-                  Learn More
-                </Button>
-              </Link>
-            </div>
+            <blockquote className="border-l-4 border-primary bg-primary/5 rounded-lg p-8 italic text-lg text-slate-700 relative">
+              <span className="text-5xl text-primary/30 absolute top-2 left-4">"</span>
+              <p className="pl-6">An expectant mother provides for the physical growth of a developing child through consciousness choices, diet, and the use of prenatal vitamins. The introduction of age-appropriate activities in the womb promotes sound organization and execution of early academic skills in infancy.</p>
+              <p className="text-right mt-4 not-italic font-semibold text-primary">— RAMANI MISSION</p>
+            </blockquote>
           </div>
         </div>
       </section>
 
-      {/* About/Mission Section */}
-      <section className="py-20 px-4 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="lg:w-1/2">
-              <div className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/images/about-mission.jpg"
-                  alt="Our Mission"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-            <div className="lg:w-1/2">
-              <h2 className="text-primary font-bold tracking-widest text-sm uppercase mb-3 font-publicSans">Who We Are</h2>
-              <h3 className="text-3xl md:text-4xl font-manrope font-bold text-foreground mb-6">
-                A Mission of Hope and Transformation
-              </h3>
-              <p className="text-gray-600 font-publicSans text-lg leading-relaxed mb-6">
-                For over a decade, Ramani Foundation has been at the forefront of social change in India. We believe that true development happens when communities are empowered with the right tools, knowledge, and resources.
+      {/* Case for Support Section */}
+      <section className="relative py-24 px-4 bg-white overflow-hidden">
+        {/* Curved Wave Divider Top */}
+        <svg className="absolute top-0 left-0 w-full h-24 text-white -translate-y-1/2" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
+        </svg>
+
+        <div className="container mx-auto px-4 lg:px-8 pt-12">
+          <div className="flex justify-center mb-6">
+            <span className="text-4xl">💖</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-manrope font-extrabold text-center text-foreground mb-16">
+            Case for Support
+          </h2>
+
+          <div className="grid gap-12 lg:grid-cols-2 items-center mb-20">
+            <div className="space-y-6">
+              <p className="text-lg text-slate-700 leading-relaxed">
+                The National Institute of Health reports that by the age of five, <strong>90% of the brain</strong> is developed. Ramani Foundation is inspired to adequately experience and to the fostering of lifelong acquiring thinking capabilities through peer-reviewed robust activities.
               </p>
-              <p className="text-gray-600 font-publicSans text-lg leading-relaxed mb-8">
-                Our focused initiatives in rural education, women's empowerment, and accessible healthcare are designed to break the cycle of poverty and build a resilient future.
-              </p>
-              <Link href="/about">
-                <Button variant="outline" className="text-primary border-primary hover:bg-primary hover:text-white px-6 font-bold">
-                  Read Our Full Story &rarr;
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Impact Section */}
-      <section className="py-16 px-4 bg-primary text-white">
-        <div className="container mx-auto px-4 lg:px-8 text-center">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-white/20">
-            <div className="p-6">
-              <h3 className="text-5xl font-manrope font-extrabold text-accent mb-3">50k+</h3>
-              <p className="text-lg font-publicSans font-medium text-gray-200 uppercase tracking-wide">Lives Touched</p>
-            </div>
-            <div className="p-6">
-              <h3 className="text-5xl font-manrope font-extrabold text-accent mb-3">120</h3>
-              <p className="text-lg font-publicSans font-medium text-gray-200 uppercase tracking-wide">Active Projects</p>
-            </div>
-            <div className="p-6">
-              <h3 className="text-5xl font-manrope font-extrabold text-accent mb-3">15</h3>
-              <p className="text-lg font-publicSans font-medium text-gray-200 uppercase tracking-wide">Communities Served</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Upcoming Events Preview */}
-      <section className="py-20 px-4 bg-white">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-primary font-bold tracking-widest text-sm uppercase mb-2 font-publicSans">Join Us</h2>
-              <h3 className="text-3xl md:text-4xl font-manrope font-bold text-foreground">Upcoming Events</h3>
-            </div>
-            <Link href="/events" className="hidden sm:block text-primary font-bold hover:text-accent transition-colors">
-              View All Events &rarr;
-            </Link>
-          </div>
-
-          {upcomingEvents.length === 0 ? (
-            <p className="text-gray-500 font-publicSans text-center py-8">No upcoming events at the moment.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {upcomingEvents.map((event: any) => (
-                <div key={event.id} className="bg-background rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
-                  {event.image_url ? (
-                    <div className="h-48 relative">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={mediaUrl(event.image_url)} alt={event.title} className="object-cover w-full h-full" />
-                    </div>
-                  ) : (
-                    <div className="h-48 bg-primary/10 flex items-center justify-center">
-                       <span className="text-primary font-manrope font-bold opacity-50">Event</span>
-                    </div>
-                  )}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <div className="text-xs font-bold text-accent uppercase mb-2">
-                       {format(new Date(event.date), 'MMM d, yyyy')}
-                    </div>
-                    <h4 className="text-lg font-manrope font-bold text-foreground mb-2 line-clamp-2">{event.title}</h4>
-                    <p className="text-sm text-gray-500 font-publicSans flex-grow line-clamp-2">{event.description}</p>
+              <div className="space-y-4">
+                <div className="flex gap-4 items-start">
+                  <span className="text-2xl text-primary flex-shrink-0 mt-1">✓</span>
+                  <div>
+                    <h4 className="font-bold text-foreground mb-2">Discovering and disseminating recruitment information</h4>
+                    <p className="text-slate-600">with a focus on earliest childhood</p>
                   </div>
                 </div>
-              ))}
+                <div className="flex gap-4 items-start">
+                  <span className="text-2xl text-primary flex-shrink-0 mt-1">✓</span>
+                  <div>
+                    <h4 className="font-bold text-foreground mb-2">Increasing awareness among parents, caregivers and health care</h4>
+                    <p className="text-slate-600">results from providing an optimal environment during a period and early development influence</p>
+                  </div>
+                </div>
+                <div className="flex gap-4 items-start">
+                  <span className="text-2xl text-primary flex-shrink-0 mt-1">✓</span>
+                  <div>
+                    <h4 className="font-bold text-foreground mb-2">Providing access to prenatal premier protocol to preschool developmental</h4>
+                    <p className="text-slate-600">training skills in ALL countries and programs</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
-          <div className="mt-8 text-center sm:hidden">
-             <Link href="/events">
-                <Button variant="outline" className="text-primary border-primary">View All Events</Button>
-             </Link>
+            <div className="relative">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-2xl overflow-hidden aspect-square bg-gray-200 shadow-lg">
+                  <Image src="/images/hero-community.jpg" alt="Support 1" fill className="object-cover" />
+                </div>
+                <div className="rounded-2xl overflow-hidden aspect-square bg-gray-200 shadow-lg">
+                  <Image src="/images/hero-community.jpg" alt="Support 2" fill className="object-cover" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Curved Wave Divider Bottom */}
+        <svg className="absolute bottom-0 left-0 w-full h-24 text-gray-50" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
+        </svg>
       </section>
 
-      {/* Gallery Preview Section */}
+      {/* Specific Initiatives Section */}
+      <section className="relative py-24 px-4 bg-gray-50">
+        {/* Curved Wave Divider Top */}
+        <svg className="absolute top-0 left-0 w-full h-24 text-gray-50 -translate-y-1/2" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
+        </svg>
+
+        <div className="container mx-auto px-4 lg:px-8 pt-12">
+          <div className="flex justify-center mb-6">
+            <span className="text-4xl">💝</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-manrope font-extrabold text-center text-foreground mb-6">
+            Specific Initiatives
+          </h2>
+          <p className="text-center text-slate-600 max-w-2xl mx-auto mb-16">
+            Our comprehensive approach across four key pillars of impact
+          </p>
+
+          <div className="grid gap-8 md:grid-cols-4">
+            {[
+              {
+                icon: "🧠",
+                title: "Neuro Development",
+                description: "Provide disadvantaged and underserved expecting mothers with access to education during the period of brain development.",
+              },
+              {
+                icon: "📚",
+                title: "Education Programs",
+                description: "Partner with programs that work to identify interventions within elementary and secondary school structure.",
+              },
+              {
+                icon: "🏥",
+                title: "Collaboration & Care",
+                description: "Collaborate with physicians, nurses and social workers to develop comprehensive intervention protocols.",
+              },
+              {
+                icon: "🔬",
+                title: "Research Partnerships",
+                description: "Initiate research partnerships to explore the positive impacts of research evidence and sealing of intervention.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-[1.75rem] bg-white border border-slate-100 p-8 text-center shadow-sm transition hover:shadow-lg hover:-translate-y-1">
+                <div className="text-5xl mb-4">{item.icon}</div>
+                <h3 className="text-2xl font-bold text-foreground mb-4">{item.title}</h3>
+                <p className="text-slate-600 leading-relaxed">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Curved Wave Divider Bottom */}
+        <svg className="absolute bottom-0 left-0 w-full h-24 text-background" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
+        </svg>
+      </section>
+
+      {/* Action Statement Section */}
+      <section className="relative py-24 px-4 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex justify-center mb-6">
+            <span className="text-4xl">💝</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-manrope font-extrabold text-center text-foreground mb-6">
+            Action Statement
+          </h2>
+
+          <div className="text-center mb-16">
+            <h3 className="text-3xl font-bold text-primary mb-12">We Will:</h3>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3 mb-20">
+            {[
+              {
+                icon: "👥",
+                title: "Collaborate with research",
+                description: "educational programs and stakeholders that design and implement cycles of development to improve systems, methods and skills.",
+              },
+              {
+                icon: "📖",
+                title: "Teach parents & companions",
+                description: "early years compared and education about the neurological growth of emerging child through the experience of promoting a child.",
+              },
+              {
+                icon: "🔬",
+                title: "Foster and fund scientific research",
+                description: "with a focus on improving nutritional developmental outcomes and increased school success.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl bg-white border border-slate-100 p-8 shadow-sm transition hover:shadow-lg text-center">
+                <div className="text-5xl mb-6">{item.icon}</div>
+                <h3 className="text-xl font-bold text-foreground mb-4">{item.title}</h3>
+                <p className="text-slate-600 leading-relaxed">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Curved Wave Divider Bottom */}
+        <svg className="absolute bottom-0 left-0 w-full h-24 text-white" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
+        </svg>
+      </section>
+
       <section className="py-20 px-4 bg-background border-t border-gray-200">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-           <h2 className="text-primary font-bold tracking-widest text-sm uppercase mb-2 font-publicSans">Our Impact in Pictures</h2>
-           <h3 className="text-3xl md:text-4xl font-manrope font-bold text-foreground mb-12">Moments of Change</h3>
-
-           {galleryPreview.length === 0 ? (
-             <p className="text-gray-500 font-publicSans">No gallery images available yet.</p>
-           ) : (
-             <div className="flex flex-wrap justify-center gap-4 mb-10">
-               {galleryPreview.map((item: any, idx: number) => (
-                 <div key={item.id} className={`relative overflow-hidden rounded-lg shadow-sm group ${idx === 0 ? 'w-full md:w-2/3 h-64 md:h-96' : 'w-[45%] md:w-[23%] h-40 md:h-64'}`}>
-                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                   <img src={mediaUrl(item.image_url)} alt={item.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                     <p className="text-white font-manrope font-bold text-sm text-left line-clamp-2">{item.title}</p>
-                   </div>
-                 </div>
-               ))}
-             </div>
-           )}
-           <Link href="/gallery">
-              <Button className="bg-primary text-white hover:bg-primary/90 px-8 py-4 font-bold">Explore Full Gallery</Button>
-           </Link>
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Visual stories</p>
+          <h2 className="mt-3 text-3xl font-manrope font-extrabold text-foreground sm:text-4xl">A closer look at our work.</h2>
+        </div>
+        <div className="mt-12 grid gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+          {galleryPreview.map((item) => (
+            <div key={item.id} className="group relative overflow-hidden rounded-[1.75rem] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <div className="aspect-[4/5] overflow-hidden bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={mediaUrl(item.image_url)} alt={item.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+              </div>
+              <div className="p-6 text-left">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-secondary">Impact</p>
+                <h3 className="mt-3 text-lg font-semibold text-foreground">{item.title}</h3>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="relative py-24 px-4 flex items-center justify-center text-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/volunteer.jpg"
-            alt="Volunteers"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-primary/80 mix-blend-multiply"></div>
-        </div>
-        <div className="relative z-10 container mx-auto max-w-3xl">
-          <h2 className="text-4xl md:text-5xl font-manrope font-extrabold text-white mb-6">Be the Change You Wish to See</h2>
-          <p className="text-xl text-gray-200 mb-10 font-publicSans">
-            Whether you want to volunteer your time, partner with us, or make a donation, your contribution makes a lasting difference in the lives of many.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
-              <Button className="w-full sm:w-auto bg-accent text-white hover:bg-accent/90 shadow-lg px-8 py-6 text-lg font-bold">
-                Become a Volunteer
-              </Button>
-            </Link>
-            <Link href="/donate">
-              <Button variant="outline" className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100 px-8 py-6 text-lg font-bold border-none shadow-lg">
-                Donate Now
-              </Button>
-            </Link>
+      <section className="relative py-24 px-4 overflow-hidden bg-slate-950 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(56,178,172,0.35),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(49,130,206,0.25),_transparent_25%)]" />
+        <div className="relative container mx-auto px-4 lg:px-8">
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-10 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-accent">Become a partner</p>
+                <h2 className="mt-4 text-4xl font-manrope font-extrabold text-white">Help us scale impact across communities.</h2>
+                <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+                  Your support powers sustainable programs in education, health, livelihoods, and community resilience. Together we can create brighter futures at scale.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 sm:flex-row sm:justify-end">
+                <Link href="/contact">
+                  <Button className="w-full sm:w-auto bg-accent text-white hover:bg-accent/90 px-8 py-4 text-lg font-bold">
+                    Contact Us
+                  </Button>
+                </Link>
+                <Link href="/donate">
+                  <Button variant="outline" className="w-full sm:w-auto rounded-full border border-white/20 bg-white/10 text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-bold">
+                    Give Today
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
