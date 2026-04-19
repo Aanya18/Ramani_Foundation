@@ -8,7 +8,7 @@ import { motion } from "framer-motion"; // optional but recommended
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white pt-20 pb-32 md:pb-40">
+    <section className="relative w-full  overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white pt-20 pb-32 md:pb-40">
       {/* Animated background elements */}
        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,_rgba(56,178,172,0.2),_transparent_50%),radial-gradient(circle_at_80%_70%,_rgba(49,130,206,0.15),_transparent_50%)]" />
       <div className="absolute top-1/3 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] animate-pulse" />
@@ -31,13 +31,13 @@ export default function HeroSection() {
                 <span className="mr-2">❤️</span> Our Mission
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-manrope font-extrabold leading-tight tracking-tight">
-                Building a{" "}
+                Empowering Udaipur's{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                  STRONG NEUROLOGICAL FOUNDATION
+                  FUTURE GENERATION
                 </span>
               </h1>
               <p className="mt-6 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0">
-                Key to academic readiness and fostering lifelong critical thinking capabilities.
+                Ramani Foundation is dedicated to transforming lives in Udaipur through education, healthcare, and community development initiatives.
               </p>
             </div>
 
@@ -65,13 +65,13 @@ export default function HeroSection() {
             {/* Trust indicators */}
             <div className="flex flex-wrap gap-6 justify-center lg:justify-start pt-6 text-sm text-slate-300">
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> 10+ Years of Impact
+                <span className="text-primary">✓</span> Serving Udaipur Since 2014
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> 50K+ Lives Touched
+                <span className="text-primary">✓</span> 25K+ Lives Transformed
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> 20+ Community Projects
+                <span className="text-primary">✓</span> 50+ Udaipur Initiatives
               </div>
             </div>
           </motion.div>
@@ -86,7 +86,7 @@ export default function HeroSection() {
             <div className="relative rounded-3xl overflow-hidden border border-white/20 bg-white/5 p-2 shadow-2xl shadow-primary/20 backdrop-blur-sm">
               <div className="relative overflow-hidden rounded-2xl aspect-square">
                 <Image
-                  src="/images/hero-community.jpg"
+                  src="/images/heroimage1.png"
                   alt="Community empowerment"
                   fill
                   className="object-cover transition-transform duration-700 hover:scale-110"
@@ -95,16 +95,7 @@ export default function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
               </div>
               {/* Floating badge */}
-              <div className="absolute -bottom-4 -left-4 bg-white/90 backdrop-blur-md rounded-xl px-4 py-2 shadow-lg flex items-center gap-2">
-                <span className="text-2xl">🌟</span>
-                <div>
-                  <p className="text-xs font-semibold text-slate-600">Impact Score</p>
-                  <p className="text-lg font-bold text-primary">9.8/10</p>
-                </div>
-              </div>
-              <div className="absolute -top-4 -right-4 bg-primary/90 rounded-full p-3 shadow-lg">
-                <span className="text-white text-sm font-bold">+89%</span>
-              </div>
+             
             </div>
           </motion.div>
         </div>

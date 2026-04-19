@@ -114,7 +114,7 @@ export default function RootLayout({
                   </li>
                   <li className="flex items-center gap-3">
                     <span>✉️</span>
-                    <span>info@ramanifoundation.org</span>
+                    <span className=" truncate">info@ramanifoundation.org</span>
                   </li>
                 </ul>
               </div>

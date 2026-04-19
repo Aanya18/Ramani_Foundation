@@ -13,9 +13,9 @@ export default async function Events() {
       <div className="bg-gradient-to-br from-primary to-secondary text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Our Events & Initiatives</h1>
+            <h1 className="text-4xl md:text-5xl font-manrope font-extrabold mb-4">Udaipur Events & Programs</h1>
             <p className="text-lg md:text-xl font-publicSans text-white/85 leading-relaxed">
-              Join hands with us in programs designed to strengthen communities through education, health, and youth empowerment.
+              Join hands with us in programs designed to strengthen Udaipur's communities through education, healthcare, cultural preservation, and sustainable development.
             </p>
           </div>
         </div>

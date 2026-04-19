@@ -8,11 +8,23 @@ export default function About() {
               About Us
             </span>
             <h1 className="mt-8 text-4xl font-manrope font-extrabold leading-tight sm:text-5xl">
-              Built to deliver meaningful outcomes for families and communities.
+              Transforming Udaipur's communities through education, healthcare, and sustainable development.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-slate-100 leading-relaxed">
-              Ramani Foundation partners with caregivers, educators, and health professionals to create long-term, evidence-driven programs that support early childhood development, health, and local economic resilience.
+              Ramani Foundation, based in the heart of Udaipur, Rajasthan, works tirelessly to uplift marginalized communities through comprehensive programs that address education, healthcare, women's empowerment, and environmental conservation.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <img
+              src="/images/about-mission.jpg"
+              alt="Our mission in action"
+              className="w-full h-96 object-cover rounded-2xl shadow-lg"
+            />
           </div>
         </div>
       </section>
@@ -23,19 +35,18 @@ export default function About() {
             <div className="rounded-[2rem] border border-slate-200/70 bg-white p-10 shadow-lg">
               <h2 className="text-3xl font-manrope font-bold text-foreground mb-4">Our Purpose</h2>
               <p className="text-slate-600 leading-relaxed">
-                We work where the need is greatest, creating supportive systems for prenatal care, early education, and community-led leadership training.
-                Every program is designed to accelerate opportunity in the first five years of life and strengthen family capacity for the long term.
+                Based in Udaipur, Rajasthan, we focus on addressing the unique challenges faced by communities in this culturally rich region. Our programs target education gaps, healthcare access, women's empowerment, and environmental conservation to create sustainable development in Udaipur and surrounding areas.
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2">
               {[
                 {
-                  title: "Community Leadership",
-                  description: "Empowering local partners to shape their own development journey.",
+                  title: "Udaipur Community Leadership",
+                  description: "Empowering local leaders in Udaipur to drive sustainable development initiatives.",
                 },
                 {
-                  title: "Health & Nutrition",
-                  description: "Supporting the earliest stages of growth with high-impact care and screenings.",
+                  title: "Healthcare Access",
+                  description: "Providing quality healthcare services to underserved communities in and around Udaipur.",
                 },
               ].map((item) => (
                 <div key={item.title} className="rounded-[1.75rem] bg-white border border-slate-200 p-8 shadow-sm">
@@ -50,13 +61,13 @@ export default function About() {
             <div className="rounded-[2rem] bg-primary/10 p-10 border border-primary/20">
               <h3 className="text-2xl font-manrope font-bold text-primary mb-4">Our Mission</h3>
               <p className="text-slate-700 leading-relaxed">
-                To empower marginalized communities through holistic initiatives that promote self-reliance, education, and well-being.
+                To create lasting positive change in Udaipur by addressing the root causes of poverty, illiteracy, and health challenges through comprehensive community development programs.
               </p>
             </div>
             <div className="rounded-[2rem] bg-secondary/10 p-10 border border-secondary/20">
               <h3 className="text-2xl font-manrope font-bold text-secondary mb-4">Our Vision</h3>
               <p className="text-slate-700 leading-relaxed">
-                A society where every child can reach their full potential, and every family has the support they need to build a brighter future.
+                A thriving Udaipur where every individual has access to quality education, healthcare, and economic opportunities, creating a sustainable and empowered community.
               </p>
             </div>
           </div>

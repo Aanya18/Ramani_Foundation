@@ -4,6 +4,15 @@ import Image from "next/image";
 import { fetchEvents, fetchGallery, mediaUrl, type Event, type GalleryItem } from "@/lib/api";
 import { format } from "date-fns";
 import HeroSection from "@/components/HeroSection";
+import StatsSection from "@/components/StatsSection";
+import GalleryGridSection from "@/components/GalleryGridSection";
+import CTASection from "@/components/CTASection";
+import StatsIndicators from "@/components/StatsIndicators";
+import EventScheduleSection from "@/components/EventScheduleSection";
+import VolunteerSection from "@/components/VolunteerSection";
+import TeamSection from "@/components/TeamSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import NewsSection from "@/components/NewsSection";
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +28,9 @@ export default async function Home() {
       {/* Hero Section */}
      
       <HeroSection />
+
+      {/* Stats Section */}
+      <StatsSection />
 
       {/* Mission Statement Section */}
       <section className="relative py-20 px-4 bg-background">
@@ -229,34 +241,29 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="relative py-24 px-4 overflow-hidden bg-slate-950 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(56,178,172,0.35),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(49,130,206,0.25),_transparent_25%)]" />
-        <div className="relative container mx-auto px-4 lg:px-8">
-          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-10 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.7)] backdrop-blur-xl">
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-accent">Become a partner</p>
-                <h2 className="mt-4 text-4xl font-manrope font-extrabold text-white">Help us scale impact across communities.</h2>
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-                  Your support powers sustainable programs in education, health, livelihoods, and community resilience. Together we can create brighter futures at scale.
-                </p>
-              </div>
-              <div className="flex flex-col gap-4 sm:flex-row sm:justify-end">
-                <Link href="/contact">
-                  <Button className="w-full sm:w-auto bg-accent text-white hover:bg-accent/90 px-8 py-4 text-lg font-bold">
-                    Contact Us
-                  </Button>
-                </Link>
-                <Link href="/donate">
-                  <Button variant="outline" className="w-full sm:w-auto rounded-full border border-white/20 bg-white/10 text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-bold">
-                    Give Today
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Gallery Grid Section */}
+      <GalleryGridSection />
+
+      {/* CTA Section */}
+      <CTASection />
+
+      {/* Stats Indicators */}
+      <StatsIndicators />
+
+      {/* Event Schedule Section */}
+      <EventScheduleSection />
+
+      {/* Volunteer Section */}
+      <VolunteerSection />
+
+      {/* Team Section */}
+      <TeamSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
+      {/* News Section */}
+      <NewsSection />
     </div>
   );
 }
