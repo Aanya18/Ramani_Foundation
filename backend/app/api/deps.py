@@ -12,3 +12,7 @@ async def get_current_user(
 ) -> AdminUser:
     return await user_service.get_user_from_token(token)
 
+async def get_current_admin(
+    current_user: AdminUser = Depends(get_current_user)
+) -> AdminUser:
+    return current_user

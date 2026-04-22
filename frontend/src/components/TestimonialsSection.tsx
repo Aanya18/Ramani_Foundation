@@ -2,46 +2,14 @@
 
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import { type Testimonial, mediaUrl } from "@/lib/api";
 
-export default function TestimonialsSection() {
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sunita Devi",
-      role: "Udaipur Community Member",
-      content: "Ramani Foundation's education program gave my children the opportunity they deserved. Now my daughter studies medicine in Jaipur. This foundation truly transforms lives in our community.",
-      rating: 5,
-      bgClass: "from-primary to-secondary",
-      avatar: "/images/avatar-sunita.jpg",
-    },
-    {
-      id: 2,
-      name: "Arjun Singh",
-      role: "Local Volunteer",
-      content: "Working with Ramani Foundation has shown me the real impact of community service. Together, we're building a better Udaipur for everyone.",
-      rating: 5,
-      bgClass: "from-secondary to-accent",
-      avatar: "/images/avatar-arjun.jpg",
-    },
-    {
-      id: 3,
-      name: "Kavita Jain",
-      role: "Regular Donor",
-      content: "I've seen firsthand how Ramani Foundation uses donations effectively. Their transparency and focus on Udaipur's specific needs make them trustworthy partners in change.",
-      rating: 5,
-      bgClass: "from-accent to-primary",
-      avatar: "/images/avatar-kavita.jpg",
-    },
-    {
-      id: 4,
-      name: "Ramesh Kumar",
-      role: "Program Beneficiary",
-      content: "The healthcare camps and education support from Ramani Foundation have been life-changing for my family. They're the heart of Udaipur's development.",
-      rating: 5,
-      bgClass: "from-primary to-accent",
-      avatar: "/images/avatar-ramesh.jpg",
-    },
-  ];
+interface TestimonialsSectionProps {
+  testimonials: Testimonial[];
+}
+
+export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
+  if (!testimonials || testimonials.length === 0) return null;
 
   return (
     <section className="relative py-24 px-4 bg-background">
@@ -57,7 +25,7 @@ export default function TestimonialsSection() {
             ✓ Testimonials
           </span>
           <h2 className="text-4xl lg:text-5xl font-manrope font-extrabold text-foreground">
-            What They Are Talking About Charities
+            What Our Community Says
           </h2>
         </motion.div>
 
@@ -70,7 +38,7 @@ export default function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 group"
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 group flex flex-col"
             >
               {/* Stars */}
               <div className="flex gap-1 mb-4">
@@ -83,20 +51,26 @@ export default function TestimonialsSection() {
               </div>
 
               {/* Content */}
-              <p className="text-slate-700 mb-6 leading-relaxed">{testimonial.content}</p>
+              <p className="text-slate-700 mb-6 leading-relaxed flex-grow">{testimonial.content}</p>
 
               {/* Author */}
               <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
-                <img
-                  src={testimonial.avatar}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                />
+                {testimonial.image_url ? (
+                   <img
+                   src={mediaUrl(testimonial.image_url)}
+                   alt={testimonial.name}
+                   className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                 />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <h4 className="font-bold text-foreground text-sm">
                     {testimonial.name}
                   </h4>
-                  <p className="text-xs text-primary">{testimonial.role}</p>
+                  {testimonial.role && <p className="text-xs text-primary">{testimonial.role}</p>}
                 </div>
               </div>
             </motion.div>

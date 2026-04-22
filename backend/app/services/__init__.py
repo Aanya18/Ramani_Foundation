@@ -3,4 +3,7 @@ from .donation import DonationService
 from .event import EventService
 from .gallery import GalleryService
 from .lead import LeadService
+from .team_member import TeamMemberService
+from .testimonial import TestimonialService
+from .article import ArticleService
 from .user import UserService

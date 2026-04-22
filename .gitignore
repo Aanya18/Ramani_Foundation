@@ -11,3 +11,5 @@ backend/cache/*
 backend/venv/
 backend/.ven
 node_modules/
+*.log
+*.db

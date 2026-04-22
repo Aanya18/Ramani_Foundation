@@ -2,9 +2,15 @@ from .routes import private_donation_router
 from .routes import private_event_router
 from .routes import private_gallery_router
 from .routes import private_lead_router
+from .routes import private_team_member_router
+from .routes import private_testimonial_router
+from .routes import private_article_router
 from .routes import public_auth_router
 from .routes import public_donation_router
 from .routes import public_event_router
 from .routes import public_gallery_router
 from .routes import public_lead_router
+from .routes import public_team_member_router
+from .routes import public_testimonial_router
+from .routes import public_article_router
 from .routes import public_images_router

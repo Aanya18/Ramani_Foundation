@@ -1,8 +1,4 @@
-﻿import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { fetchEvents, fetchGallery, mediaUrl, type Event, type GalleryItem } from "@/lib/api";
-import { format } from "date-fns";
+﻿import { fetchEvents, fetchGallery, fetchTeam, fetchTestimonials, fetchArticles, type Event, type GalleryItem, type TeamMember, type Testimonial, type Article } from "@/lib/api";
 import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
 import GalleryGridSection from "@/components/GalleryGridSection";
@@ -13,20 +9,26 @@ import VolunteerSection from "@/components/VolunteerSection";
 import TeamSection from "@/components/TeamSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import NewsSection from "@/components/NewsSection";
+import Image from "next/image";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const allEvents: Event[] = await fetchEvents().catch(() => []);
-  const upcomingEvents = allEvents.slice(0, 4);
+  const [allEvents, allGallery, teamMembers, testimonials, articles] = await Promise.all([
+    fetchEvents().catch(() => []),
+    fetchGallery().catch(() => []),
+    fetchTeam().catch(() => []),
+    fetchTestimonials().catch(() => []),
+    fetchArticles().catch(() => []),
+  ]);
 
-  const allGallery: GalleryItem[] = await fetchGallery().catch(() => []);
-  const galleryPreview = allGallery.slice(0, 5);
+  const upcomingEvents = allEvents.slice(0, 4);
+  const galleryPreview = allGallery.slice(0, 6);
+  const newsPreview = articles.slice(0, 3);
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-     
       <HeroSection />
 
       {/* Stats Section */}
@@ -43,11 +45,11 @@ export default async function Home() {
           </h2>
           <div className="space-y-8">
             <p className="text-lg text-slate-600 leading-relaxed">
-              <strong>Ramani Foundation</strong> is a 501(c)(3) nonprofit driven to empower, facilitate and deliver knowledge and guidance for the organization's enrichment of the early childhood environment.
+              <strong>Ramani Foundation</strong> is dedicated to empowering, facilitating, and delivering knowledge and guidance for the enrichment of communities and early childhood environments.
             </p>
             <blockquote className="border-l-4 border-primary bg-primary/5 rounded-lg p-8 italic text-lg text-slate-700 relative">
               <span className="text-5xl text-primary/30 absolute top-2 left-4">"</span>
-              <p className="pl-6">An expectant mother provides for the physical growth of a developing child through consciousness choices, diet, and the use of prenatal vitamins. The introduction of age-appropriate activities in the womb promotes sound organization and execution of early academic skills in infancy.</p>
+              <p className="pl-6">Empowering mothers and children through conscious choices and age-appropriate activities promotes sound development and long-term success.</p>
               <p className="text-right mt-4 not-italic font-semibold text-primary">— RAMANI MISSION</p>
             </blockquote>
           </div>
@@ -56,7 +58,6 @@ export default async function Home() {
 
       {/* Case for Support Section */}
       <section className="relative py-24 px-4 bg-white overflow-hidden">
-        {/* Curved Wave Divider Top */}
         <svg className="absolute top-0 left-0 w-full h-24 text-white -translate-y-1/2" viewBox="0 0 1440 120" preserveAspectRatio="none">
           <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
         </svg>
@@ -72,46 +73,45 @@ export default async function Home() {
           <div className="grid gap-12 lg:grid-cols-2 items-center mb-20">
             <div className="space-y-6">
               <p className="text-lg text-slate-700 leading-relaxed">
-                The National Institute of Health reports that by the age of five, <strong>90% of the brain</strong> is developed. Ramani Foundation is inspired to adequately experience and to the fostering of lifelong acquiring thinking capabilities through peer-reviewed robust activities.
+                Research shows that by the age of five, <strong>90% of the brain</strong> is developed. Ramani Foundation is inspired to foster lifelong thinking capabilities through robust, peer-reviewed activities.
               </p>
               <div className="space-y-4">
                 <div className="flex gap-4 items-start">
                   <span className="text-2xl text-primary flex-shrink-0 mt-1">✓</span>
                   <div>
-                    <h4 className="font-bold text-foreground mb-2">Discovering and disseminating recruitment information</h4>
-                    <p className="text-slate-600">with a focus on earliest childhood</p>
+                    <h4 className="font-bold text-foreground mb-2">Early Childhood Development</h4>
+                    <p className="text-slate-600">Focusing on the most critical years of growth.</p>
                   </div>
                 </div>
                 <div className="flex gap-4 items-start">
                   <span className="text-2xl text-primary flex-shrink-0 mt-1">✓</span>
                   <div>
-                    <h4 className="font-bold text-foreground mb-2">Increasing awareness among parents, caregivers and health care</h4>
-                    <p className="text-slate-600">results from providing an optimal environment during a period and early development influence</p>
+                    <h4 className="font-bold text-foreground mb-2">Increasing Awareness</h4>
+                    <p className="text-slate-600">Educating parents and caregivers for optimal environments.</p>
                   </div>
                 </div>
                 <div className="flex gap-4 items-start">
                   <span className="text-2xl text-primary flex-shrink-0 mt-1">✓</span>
                   <div>
-                    <h4 className="font-bold text-foreground mb-2">Providing access to prenatal premier protocol to preschool developmental</h4>
-                    <p className="text-slate-600">training skills in ALL countries and programs</p>
+                    <h4 className="font-bold text-foreground mb-2">Universal Access</h4>
+                    <p className="text-slate-600">Providing premier protocol skills across all programs.</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="relative">
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-2xl overflow-hidden aspect-square bg-gray-200 shadow-lg">
-                  <Image src="/images/hero-community.jpg" alt="Support 1" fill className="object-cover" />
+                <div className="rounded-2xl overflow-hidden aspect-square bg-gray-200 shadow-lg relative">
+                   <Image src="/images/hero-community.jpg" alt="Support 1" fill className="object-cover" />
                 </div>
-                <div className="rounded-2xl overflow-hidden aspect-square bg-gray-200 shadow-lg">
-                  <Image src="/images/hero-community.jpg" alt="Support 2" fill className="object-cover" />
+                <div className="rounded-2xl overflow-hidden aspect-square bg-gray-200 shadow-lg relative">
+                   <Image src="/images/hero-community.jpg" alt="Support 2" fill className="object-cover" />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Curved Wave Divider Bottom */}
         <svg className="absolute bottom-0 left-0 w-full h-24 text-gray-50" viewBox="0 0 1440 120" preserveAspectRatio="none">
           <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
         </svg>
@@ -119,7 +119,6 @@ export default async function Home() {
 
       {/* Specific Initiatives Section */}
       <section className="relative py-24 px-4 bg-gray-50">
-        {/* Curved Wave Divider Top */}
         <svg className="absolute top-0 left-0 w-full h-24 text-gray-50 -translate-y-1/2" viewBox="0 0 1440 120" preserveAspectRatio="none">
           <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
         </svg>
@@ -140,22 +139,22 @@ export default async function Home() {
               {
                 icon: "🧠",
                 title: "Neuro Development",
-                description: "Provide disadvantaged and underserved expecting mothers with access to education during the period of brain development.",
+                description: "Provide disadvantaged mothers with access to education during critical brain development periods.",
               },
               {
                 icon: "📚",
                 title: "Education Programs",
-                description: "Partner with programs that work to identify interventions within elementary and secondary school structure.",
+                description: "Partner with schools to identify interventions within elementary and secondary structures.",
               },
               {
                 icon: "🏥",
                 title: "Collaboration & Care",
-                description: "Collaborate with physicians, nurses and social workers to develop comprehensive intervention protocols.",
+                description: "Collaborate with health professionals to develop comprehensive intervention protocols.",
               },
               {
                 icon: "🔬",
                 title: "Research Partnerships",
-                description: "Initiate research partnerships to explore the positive impacts of research evidence and sealing of intervention.",
+                description: "Explore the positive impacts of research evidence and scaling of intervention.",
               },
             ].map((item) => (
               <div key={item.title} className="rounded-[1.75rem] bg-white border border-slate-100 p-8 text-center shadow-sm transition hover:shadow-lg hover:-translate-y-1">
@@ -167,7 +166,6 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Curved Wave Divider Bottom */}
         <svg className="absolute bottom-0 left-0 w-full h-24 text-background" viewBox="0 0 1440 120" preserveAspectRatio="none">
           <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
         </svg>
@@ -191,18 +189,18 @@ export default async function Home() {
             {[
               {
                 icon: "👥",
-                title: "Collaborate with research",
-                description: "educational programs and stakeholders that design and implement cycles of development to improve systems, methods and skills.",
+                title: "Collaborate with Research",
+                description: "Partner with stakeholders to design and implement cycles of development to improve systems.",
               },
               {
                 icon: "📖",
-                title: "Teach parents & companions",
-                description: "early years compared and education about the neurological growth of emerging child through the experience of promoting a child.",
+                title: "Teach Parents & Caregivers",
+                description: "Educate on neurological growth and best practices for promoting child development.",
               },
               {
                 icon: "🔬",
-                title: "Foster and fund scientific research",
-                description: "with a focus on improving nutritional developmental outcomes and increased school success.",
+                title: "Foster Scientific Research",
+                description: "Fund research focused on improving nutritional and developmental outcomes.",
               },
             ].map((item) => (
               <div key={item.title} className="rounded-2xl bg-white border border-slate-100 p-8 shadow-sm transition hover:shadow-lg text-center">
@@ -214,35 +212,13 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Curved Wave Divider Bottom */}
         <svg className="absolute bottom-0 left-0 w-full h-24 text-white" viewBox="0 0 1440 120" preserveAspectRatio="none">
           <path fill="currentColor" d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z" />
         </svg>
       </section>
 
-      <section className="py-20 px-4 bg-background border-t border-gray-200">
-        <div className="container mx-auto px-4 lg:px-8 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-primary">Visual stories</p>
-          <h2 className="mt-3 text-3xl font-manrope font-extrabold text-foreground sm:text-4xl">A closer look at our work.</h2>
-        </div>
-        <div className="mt-12 grid gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
-          {galleryPreview.map((item) => (
-            <div key={item.id} className="group relative overflow-hidden rounded-[1.75rem] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-              <div className="aspect-[4/5] overflow-hidden bg-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={mediaUrl(item.image_url)} alt={item.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-              </div>
-              <div className="p-6 text-left">
-                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-secondary">Impact</p>
-                <h3 className="mt-3 text-lg font-semibold text-foreground">{item.title}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Gallery Grid Section */}
-      <GalleryGridSection />
+      <GalleryGridSection items={galleryPreview} />
 
       {/* CTA Section */}
       <CTASection />
@@ -251,19 +227,19 @@ export default async function Home() {
       <StatsIndicators />
 
       {/* Event Schedule Section */}
-      <EventScheduleSection />
+      <EventScheduleSection events={upcomingEvents} />
 
       {/* Volunteer Section */}
       <VolunteerSection />
 
       {/* Team Section */}
-      <TeamSection />
+      <TeamSection members={teamMembers} />
 
       {/* Testimonials Section */}
-      <TestimonialsSection />
+      <TestimonialsSection testimonials={testimonials} />
 
       {/* News Section */}
-      <NewsSection />
+      <NewsSection articles={newsPreview} />
     </div>
   );
 }

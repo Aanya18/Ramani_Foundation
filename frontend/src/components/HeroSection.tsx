@@ -31,13 +31,13 @@ export default function HeroSection() {
                 <span className="mr-2">❤️</span> Our Mission
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-manrope font-extrabold leading-tight tracking-tight">
-                Empowering Udaipur's{" "}
+                Empowering The{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
                   FUTURE GENERATION
                 </span>
               </h1>
               <p className="mt-6 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0">
-                Ramani Foundation is dedicated to transforming lives in Udaipur through education, healthcare, and community development initiatives.
+                Ramani Foundation is dedicated to transforming lives through education, healthcare, and community development initiatives.
               </p>
             </div>
 
@@ -65,13 +65,13 @@ export default function HeroSection() {
             {/* Trust indicators */}
             <div className="flex flex-wrap gap-6 justify-center lg:justify-start pt-6 text-sm text-slate-300">
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> Serving Udaipur Since 2014
+                <span className="text-primary">✓</span> Dedicated Service
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> 25K+ Lives Transformed
+                <span className="text-primary">✓</span> Lives Transformed
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> 50+ Udaipur Initiatives
+                <span className="text-primary">✓</span> Community Initiatives
               </div>
             </div>
           </motion.div>
