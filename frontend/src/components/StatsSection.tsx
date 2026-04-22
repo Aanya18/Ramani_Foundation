@@ -24,7 +24,7 @@ export default function StatsSection() {
               {/* Main stat circle */}
               <div className="relative z-10 w-64 h-64 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl">
                 <div className="text-center">
-                  <span className="block text-6xl font-extrabold text-white">15+</span>
+                  <span className="block text-6xl font-extrabold text-white">3+</span>
                   <span className="block text-lg font-semibold text-white/90 mt-2">Years Of Service</span>
                 </div>
               </div>
@@ -47,7 +47,7 @@ export default function StatsSection() {
                 Helping Each Other can Make World Better
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed">
-                With over 15 years of dedicated service, we've worked with thousands of individuals and families to create lasting positive change in our communities.
+                With over 3 years of dedicated service, we've worked with numerous individuals and families to create lasting positive change in our communities.
               </p>
             </div>
 
@@ -73,21 +73,11 @@ export default function StatsSection() {
               </div>
             </div>
 
-            {/* Team avatars */}
+            {/* Team avatars - Removed hardcoded count */}
             <div className="pt-8 flex items-center gap-4">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent border-2 border-white flex items-center justify-center text-white font-bold"
-                  >
-                    {i}
-                  </div>
-                ))}
-              </div>
               <div>
-                <p className="font-semibold text-foreground">5,000+ Active Members</p>
-                <p className="text-sm text-slate-500">Across our community</p>
+                <p className="font-semibold text-foreground">Growing Community</p>
+                <p className="text-sm text-slate-500">Working together for change</p>
               </div>
             </div>
           </motion.div>

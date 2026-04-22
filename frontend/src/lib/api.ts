@@ -19,6 +19,32 @@ export type GalleryItem = {
   event_title?: string | null;
 };
 
+export type TeamMember = {
+  id: number | string;
+  name: string;
+  role: string;
+  bio?: string | null;
+  image_url?: string | null;
+};
+
+export type Testimonial = {
+  id: number | string;
+  name: string;
+  role?: string | null;
+  content: string;
+  rating: number;
+  image_url?: string | null;
+};
+
+export type Article = {
+  id: number | string;
+  title: string;
+  content: string;
+  category?: string | null;
+  image_url?: string | null;
+  created_at: string;
+};
+
 export function mediaUrl(path: string | null | undefined): string {
   if (!path) return "";
   if (/^https?:\/\//i.test(path)) return path;
@@ -35,5 +61,23 @@ export async function fetchEvents(): Promise<Event[]> {
 export async function fetchGallery(): Promise<GalleryItem[]> {
   const res = await fetch(`${API_URL}/public/gallery`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch gallery');
+  return res.json();
+}
+
+export async function fetchTeam(): Promise<TeamMember[]> {
+  const res = await fetch(`${API_URL}/public/team`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch team');
+  return res.json();
+}
+
+export async function fetchTestimonials(): Promise<Testimonial[]> {
+  const res = await fetch(`${API_URL}/public/testimonials`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch testimonials');
+  return res.json();
+}
+
+export async function fetchArticles(): Promise<Article[]> {
+  const res = await fetch(`${API_URL}/public/articles`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch articles');
   return res.json();
 }

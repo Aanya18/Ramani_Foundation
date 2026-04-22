@@ -2,5 +2,8 @@ from .donation import DonationBase, DonationCreate, DonationResponse
 from .event import EventBase, EventCreate, EventResponse
 from .gallery import GalleryItemBase, GalleryItemCreate, GalleryItemResponse
 from .lead import LeadCreate, LeadResponse
+from .team_member import TeamMemberBase, TeamMemberCreate, TeamMemberResponse
+from .testimonial import TestimonialBase, TestimonialCreate, TestimonialResponse
+from .article import ArticleBase, ArticleCreate, ArticleResponse
 from .token import Token, TokenData
 from .user import AdminUserCreate

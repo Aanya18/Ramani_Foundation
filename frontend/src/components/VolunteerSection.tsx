@@ -59,10 +59,10 @@ export default function VolunteerSection() {
                 ✓ Volunteer
               </span>
               <h2 className="text-4xl lg:text-5xl font-manrope font-extrabold text-foreground mb-4">
-                Join Us in Transforming Udaipur
+                Join Us in Transforming Communities
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed">
-                Volunteers are the heart of Ramani Foundation. By dedicating your time and talents to Udaipur's development, you can help create lasting change in our beautiful city. Whether you want to teach, organize health camps, or support our environmental initiatives, we have meaningful opportunities for everyone.
+                Volunteers are the heart of Ramani Foundation. By dedicating your time and talents to community development, you can help create lasting change. Whether you want to teach, organize health camps, or support our environmental initiatives, we have meaningful opportunities for everyone.
               </p>
             </div>
 

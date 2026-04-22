@@ -7,22 +7,22 @@ export default function StatsIndicators() {
   const stats = [
     {
       icon: Users,
-      number: "50K+",
+      number: "Many",
       label: "People Helped",
     },
     {
       icon: Heart,
-      number: "15+",
+      number: "3+",
       label: "Years Active",
     },
     {
       icon: Target,
-      number: "100+",
+      number: "Various",
       label: "Programs",
     },
     {
       icon: Zap,
-      number: "24/7",
+      number: "Dedicated",
       label: "Support",
     },
   ];

@@ -32,7 +32,6 @@ export default function RootLayout({
         {/* Top bar - static */}
         <div className="bg-primary-foreground/5 py-2 hidden md:block border-b border-primary/10">
           <div className="container mx-auto flex justify-end items-center text-sm font-publicSans text-primary px-4 lg:px-8 space-x-6">
-            <span>📞 +91 98765 43210</span>
             <span>✉️ info@ramanifoundation.org</span>
           </div>
         </div>
@@ -67,7 +66,7 @@ export default function RootLayout({
               <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
                 Our team works closely with local partners to deliver measurable
                 impact. We welcome your support, partnership, and collaboration
-                as we scale our work across India.
+                as we scale our work across communities in need.
               </p>
             </div>
 
@@ -104,14 +103,6 @@ export default function RootLayout({
                   Contact
                 </h3>
                 <ul className="space-y-3 text-sm text-slate-300">
-                  <li className="flex items-start gap-3">
-                    <span className="mt-1">📍</span>
-                    <span>123 NGO Lane, NGO Hub, New Delhi, India</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span>📞</span>
-                    <span>+91 98765 43210</span>
-                  </li>
                   <li className="flex items-center gap-3">
                     <span>✉️</span>
                     <span className=" truncate">info@ramanifoundation.org</span>

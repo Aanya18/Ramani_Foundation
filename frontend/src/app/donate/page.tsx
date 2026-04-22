@@ -104,7 +104,7 @@ export default function Donate() {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input placeholder="Your Full Name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -117,7 +117,7 @@ export default function Donate() {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="john@example.com" {...field} />
+                          <Input type="email" placeholder="your.email@example.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -130,7 +130,7 @@ export default function Donate() {
                       <FormItem>
                         <FormLabel>Donation Amount</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g. $100" {...field} />
+                          <Input placeholder="Amount" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
