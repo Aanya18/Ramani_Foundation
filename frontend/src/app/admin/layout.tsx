@@ -48,6 +48,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/events" className={`block px-4 py-2 rounded-md ${pathname === "/admin/events" ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100"}`}>
             Manage Events
           </Link>
+          <Link href="/admin/team" className={`block px-4 py-2 rounded-md ${pathname === "/admin/team" ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100"}`}>
+            Manage Team
+          </Link>
+          <Link href="/admin/testimonials" className={`block px-4 py-2 rounded-md ${pathname === "/admin/testimonials" ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100"}`}>
+            Manage Testimonials
+          </Link>
+          <Link href="/admin/articles" className={`block px-4 py-2 rounded-md ${pathname === "/admin/articles" ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100"}`}>
+            Manage News
+          </Link>
           <Link href="/admin/gallery" className={`block px-4 py-2 rounded-md ${pathname === "/admin/gallery" ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100"}`}>
             Manage Gallery
           </Link>

@@ -89,6 +89,7 @@ export default function Footer() {
                 <li><Link href="/about" className="text-slate-400 hover:text-primary transition-colors">About Us</Link></li>
                 <li><Link href="/events" className="text-slate-400 hover:text-primary transition-colors">Events</Link></li>
                 <li><Link href="/donate" className="text-slate-400 hover:text-primary transition-colors">Donate</Link></li>
+                <li><Link href="/admin" className="text-slate-400 hover:text-primary transition-colors">Admin Login</Link></li>
               </ul>
             </motion.div>
 
