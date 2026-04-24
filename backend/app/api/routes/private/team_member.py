@@ -6,6 +6,10 @@ from app.api.deps import get_current_admin
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
 
+@router.get("/team", response_model=List[TeamMemberResponse])
+async def get_all_members(team_service: TeamMemberService = Depends()):
+    return await team_service.get_all_members()
+
 @router.post("/team", response_model=TeamMemberResponse)
 async def create_member(
     name: str = Form(...),

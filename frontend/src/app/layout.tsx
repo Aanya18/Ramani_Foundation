@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Manrope, Public_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Link from "next/link";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -95,6 +96,11 @@ export default function RootLayout({
                     <a href="/donate" className="transition hover:text-white">
                       Donate
                     </a>
+                  </li>
+                  <li>
+                    <Link href="/admin" className="transition hover:text-white">
+                      Admin Login
+                    </Link>
                   </li>
                 </ul>
               </div>

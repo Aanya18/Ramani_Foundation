@@ -6,6 +6,10 @@ from app.api.deps import get_current_admin
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
 
+@router.get("/testimonials", response_model=List[TestimonialResponse])
+async def get_all_testimonials(testimonial_service: TestimonialService = Depends()):
+    return await testimonial_service.get_all_testimonials()
+
 @router.post("/testimonials", response_model=TestimonialResponse)
 async def create_testimonial(
     name: str = Form(...),

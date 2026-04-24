@@ -6,6 +6,10 @@ from app.api.deps import get_current_admin
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
 
+@router.get("/articles", response_model=List[ArticleResponse])
+async def get_all_articles(article_service: ArticleService = Depends()):
+    return await article_service.get_all_articles()
+
 @router.post("/articles", response_model=ArticleResponse)
 async def create_article(
     title: str = Form(...),
