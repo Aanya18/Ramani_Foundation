@@ -58,7 +58,12 @@ class TestimonialService:
         )
 
     async def update_testimonial(self, testimonial_id: str, name: str, role: str | None, content: str, rating: int, image: UploadFile | None) -> TestimonialResponse:
-        db_t = await self.testimonial_repo.get_by_id(testimonial_id)
+        try:
+            target_uuid = uuid.UUID(testimonial_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid testimonial ID format")
+
+        db_t = await self.testimonial_repo.get_by_id(target_uuid)
         if not db_t:
             raise HTTPException(status_code=404, detail="Testimonial not found")
 
@@ -92,7 +97,12 @@ class TestimonialService:
         )
 
     async def delete_testimonial(self, testimonial_id: str) -> None:
-        db_t = await self.testimonial_repo.get_by_id(testimonial_id)
+        try:
+            target_uuid = uuid.UUID(testimonial_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid testimonial ID format")
+
+        db_t = await self.testimonial_repo.get_by_id(target_uuid)
         if not db_t:
             raise HTTPException(status_code=404, detail="Testimonial not found")
 

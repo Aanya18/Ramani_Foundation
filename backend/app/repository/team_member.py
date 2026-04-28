@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+import uuid
 from app.models.team_member import TeamMember
 from app.core import cache, settings
 from typing import List
@@ -13,7 +14,7 @@ class TeamMemberRepository:
         result = await self.db.execute(select(TeamMember).order_by(TeamMember.created_at.desc()))
         return result.scalars().all()
 
-    async def get_by_id(self, member_id: str) -> TeamMember | None:
+    async def get_by_id(self, member_id: uuid.UUID) -> TeamMember | None:
         result = await self.db.execute(select(TeamMember).where(TeamMember.id == member_id))
         return result.scalars().first()
 

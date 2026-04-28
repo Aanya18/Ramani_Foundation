@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 from typing import List
 from app.schemas import LeadResponse
 from app.services import LeadService
-from app.api.deps import get_current_user
+from app.api.deps import get_current_admin
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter(dependencies=[Depends(get_current_admin)])
 
 @router.get("/leads", response_model=List[LeadResponse])
 async def get_all_leads(lead_service: LeadService = Depends()):

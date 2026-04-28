@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import List
 from app.schemas import GalleryItemResponse
 from app.services import GalleryService
-from app.api.deps import get_current_user
+from app.api.deps import get_current_admin
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter(dependencies=[Depends(get_current_admin)])
 
 @router.get("/gallery", response_model=List[GalleryItemResponse])
 async def get_all_gallery(gallery_service: GalleryService = Depends()):
