@@ -1,6 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-import uuid
 from app.models.article import Article
 from app.core import cache, settings
 from typing import List
@@ -14,7 +13,7 @@ class ArticleRepository:
         result = await self.db.execute(select(Article).order_by(Article.created_at.desc()))
         return result.scalars().all()
 
-    async def get_by_id(self, article_id: uuid.UUID) -> Article | None:
+    async def get_by_id(self, article_id: str) -> Article | None:
         result = await self.db.execute(select(Article).where(Article.id == article_id))
         return result.scalars().first()
 

@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import List
 from app.schemas import EventResponse
 from app.services import EventService
-from app.api.deps import get_current_admin
+from app.api.deps import get_current_user
 
-router = APIRouter(dependencies=[Depends(get_current_admin)])
+router = APIRouter(dependencies=[Depends(get_current_user)])
 
 @router.get("/events", response_model=List[EventResponse])
 async def get_all_events(event_service: EventService = Depends()):

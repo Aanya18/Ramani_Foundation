@@ -55,12 +55,7 @@ class ArticleService:
         )
 
     async def update_article(self, article_id: str, title: str, content: str, category: str | None, image: UploadFile | None) -> ArticleResponse:
-        try:
-            target_uuid = uuid.UUID(article_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid article ID format")
-
-        db_a = await self.article_repo.get_by_id(target_uuid)
+        db_a = await self.article_repo.get_by_id(article_id)
         if not db_a:
             raise HTTPException(status_code=404, detail="Article not found")
 
@@ -92,12 +87,7 @@ class ArticleService:
         )
 
     async def delete_article(self, article_id: str) -> None:
-        try:
-            target_uuid = uuid.UUID(article_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid article ID format")
-
-        db_a = await self.article_repo.get_by_id(target_uuid)
+        db_a = await self.article_repo.get_by_id(article_id)
         if not db_a:
             raise HTTPException(status_code=404, detail="Article not found")
 

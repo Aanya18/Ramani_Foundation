@@ -1,6 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-import uuid
 from app.models.testimonial import Testimonial
 from app.core import cache, settings
 from typing import List
@@ -14,7 +13,7 @@ class TestimonialRepository:
         result = await self.db.execute(select(Testimonial).order_by(Testimonial.created_at.desc()))
         return result.scalars().all()
 
-    async def get_by_id(self, testimonial_id: uuid.UUID) -> Testimonial | None:
+    async def get_by_id(self, testimonial_id: str) -> Testimonial | None:
         result = await self.db.execute(select(Testimonial).where(Testimonial.id == testimonial_id))
         return result.scalars().first()
 

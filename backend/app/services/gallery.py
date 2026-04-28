@@ -36,18 +36,11 @@ class GalleryService:
         # Upload to Mega
         mega_file_id = await self.image_service.upload_image(image)
 
-        target_event_uuid = None
-        if event_id:
-            try:
-                target_event_uuid = uuid.UUID(event_id)
-            except ValueError:
-                raise HTTPException(status_code=400, detail="Invalid event ID format")
-
         db_gallery = GalleryItem(
             title=title,
             mega_file_id=mega_file_id,
             content_type=image.content_type,
-            event_id=target_event_uuid
+            event_id=event_id if event_id else None
         )
         created_item = await self.gallery_repo.create(db_gallery)
         
@@ -62,12 +55,7 @@ class GalleryService:
         )
 
     async def update_gallery_item(self, item_id: str, title: str, image: UploadFile | None, event_id: str | None = None) -> GalleryItemResponse:
-        try:
-            target_uuid = uuid.UUID(item_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid gallery item ID format")
-
-        db_gallery = await self.gallery_repo.get_by_id(target_uuid)
+        db_gallery = await self.gallery_repo.get_by_id(item_id)
         if not db_gallery:
             raise HTTPException(status_code=404, detail="Gallery item not found")
 
@@ -85,13 +73,7 @@ class GalleryService:
 
         db_gallery.title = title
         if event_id is not None:
-            if event_id:
-                try:
-                    db_gallery.event_id = uuid.UUID(event_id)
-                except ValueError:
-                    raise HTTPException(status_code=400, detail="Invalid event ID format")
-            else:
-                db_gallery.event_id = None
+            db_gallery.event_id = event_id if event_id else None
 
         updated_item = await self.gallery_repo.update(db_gallery)
 
@@ -105,12 +87,7 @@ class GalleryService:
         )
 
     async def delete_gallery_item(self, item_id: str) -> None:
-        try:
-            target_uuid = uuid.UUID(item_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid gallery item ID format")
-
-        db_gallery = await self.gallery_repo.get_by_id(target_uuid)
+        db_gallery = await self.gallery_repo.get_by_id(item_id)
         if not db_gallery:
             raise HTTPException(status_code=404, detail="Gallery item not found")
 

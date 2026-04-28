@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
-import uuid
 from app.models import GalleryItem
 from app.core import cache, settings
 from typing import List
@@ -17,7 +16,7 @@ class GalleryRepository:
         )
         return result.scalars().all()
 
-    async def get_by_id(self, item_id: uuid.UUID) -> GalleryItem | None:
+    async def get_by_id(self, item_id: str) -> GalleryItem | None:
         result = await self.db.execute(
             select(GalleryItem).options(selectinload(GalleryItem.event)).where(GalleryItem.id == item_id)
         )
