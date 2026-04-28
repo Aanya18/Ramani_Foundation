@@ -108,6 +108,12 @@ class ImageService:
             if file_content:
                 image_cache.set(mega_file_id, file_content)
             return file_content
+        except HTTPException as e:
+            # Missing node is a permanent 404; retrying session will not recover it.
+            if e.status_code == 404:
+                logger.warning(f"Mega image node not found: {mega_file_id}")
+                raise
+            raise
         except Exception as e:
             logger.error(f"Download from Mega failed: {e}")
             try:

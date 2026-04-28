@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
 from app.core.database import get_db
 from app.models.gallery import GalleryItem
 from app.models.event import Event
@@ -46,7 +47,17 @@ async def get_proxied_image(
     if not item or not item.mega_file_id:
         raise HTTPException(status_code=404, detail="Image not found")
 
-    image_bytes = await image_service.get_image(item.mega_file_id)
+    try:
+        image_bytes = await image_service.get_image(item.mega_file_id)
+    except HTTPException as e:
+        # Mega node deleted: clear stale reference to stop repeated failing loads.
+        if e.status_code == 404 and item.mega_file_id:
+            item.mega_file_id = None
+            try:
+                await db.commit()
+            except SQLAlchemyError:
+                await db.rollback()
+        raise
     
     # Return streaming response with security headers
     return StreamingResponse(

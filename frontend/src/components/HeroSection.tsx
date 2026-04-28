@@ -64,13 +64,13 @@ export default function HeroSection() {
             {/* Trust indicators */}
             <div className="flex flex-wrap gap-6 justify-center lg:justify-start pt-6 text-sm text-slate-300">
               <div className="flex items-center gap-2">
-                <span className="text-primary">OK</span> Dedicated Service
+                <span className="text-primary" aria-hidden="true">✓</span> Dedicated Service
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">OK</span> Lives Transformed
+                <span className="text-primary" aria-hidden="true">✓</span> Lives Transformed
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">OK</span> Community Initiatives
+                <span className="text-primary" aria-hidden="true">✓</span> Community Initiatives
               </div>
             </div>
           </motion.div>
@@ -114,4 +114,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
