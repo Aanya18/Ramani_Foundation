@@ -3,17 +3,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button"; // adjust import based on your setup
-import { motion } from "framer-motion"; // optional but recommended
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
   return (
     <section className="relative w-full  overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white pt-20 pb-32 md:pb-40">
       {/* Animated background elements */}
-       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,_rgba(56,178,172,0.2),_transparent_50%),radial-gradient(circle_at_80%_70%,_rgba(49,130,206,0.15),_transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,_rgba(56,178,172,0.2),_transparent_50%),radial-gradient(circle_at_80%_70%,_rgba(49,130,206,0.15),_transparent_50%)]" />
       <div className="absolute top-1/3 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] animate-pulse" />
       <div className="absolute bottom-1/3 right-0 w-56 h-56 bg-secondary/10 rounded-full blur-[100px] animate-pulse delay-1000" />
-      
+
       {/* Decorative grid pattern */}
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:4rem_4rem]" />
 
@@ -28,50 +28,49 @@ export default function HeroSection() {
           >
             <div>
               <span className="inline-flex items-center rounded-full bg-primary/20 backdrop-blur-sm px-4 py-2 text-sm font-semibold tracking-[0.3em] uppercase text-primary shadow-sm mb-6">
-                <span className="mr-2">❤️</span> Our Mission
+                Our Mission
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-manrope font-extrabold leading-tight tracking-tight">
-                Empowering The{" "}
+                Transforming Lives Through{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                  FUTURE GENERATION
+                  EDUCATION AND EMPOWERMENT
                 </span>
               </h1>
               <p className="mt-6 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0">
-                Ramani Foundation is dedicated to transforming lives through education, healthcare, and community development initiatives.
+                Ramani Foundation uplifts underprivileged communities through education, healthcare access,
+                women empowerment, and sustainable community development.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
-                
                 size="lg"
                 className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary to-secondary px-8 py-6 text-lg font-bold text-white shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
                 <Link href="/donate">
-                  READ MORE
+                  SUPPORT OUR WORK
                   <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300" />
                 </Link>
               </Button>
               <Button
-                
                 variant="outline"
                 size="lg"
                 className="rounded-full border-white/30 bg-white/10 backdrop-blur-sm px-8 py-6 text-lg font-semibold text-white hover:bg-white/20 hover:border-white/50 transition-all"
               >
-                <Link href="/about">Learn More →</Link>
+                <Link href="/about">Learn More</Link>
               </Button>
             </div>
 
             {/* Trust indicators */}
             <div className="flex flex-wrap gap-6 justify-center lg:justify-start pt-6 text-sm text-slate-300">
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> Dedicated Service
+                <span className="text-primary">OK</span> Dedicated Service
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> Lives Transformed
+                <span className="text-primary">OK</span> Lives Transformed
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-primary">✓</span> Community Initiatives
+                <span className="text-primary">OK</span> Community Initiatives
               </div>
             </div>
           </motion.div>
@@ -94,8 +93,6 @@ export default function HeroSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
               </div>
-              {/* Floating badge */}
-             
             </div>
           </motion.div>
         </div>
@@ -117,3 +114,4 @@ export default function HeroSection() {
     </section>
   );
 }
+
