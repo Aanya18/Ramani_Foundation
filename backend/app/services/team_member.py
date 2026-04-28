@@ -55,7 +55,12 @@ class TeamMemberService:
         )
 
     async def update_member(self, member_id: str, name: str, role: str, bio: str | None, image: UploadFile | None) -> TeamMemberResponse:
-        db_member = await self.team_repo.get_by_id(member_id)
+        try:
+            target_uuid = uuid.UUID(member_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid team member ID format")
+
+        db_member = await self.team_repo.get_by_id(target_uuid)
         if not db_member:
             raise HTTPException(status_code=404, detail="Team member not found")
 
@@ -87,7 +92,12 @@ class TeamMemberService:
         )
 
     async def delete_member(self, member_id: str) -> None:
-        db_member = await self.team_repo.get_by_id(member_id)
+        try:
+            target_uuid = uuid.UUID(member_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid team member ID format")
+
+        db_member = await self.team_repo.get_by_id(target_uuid)
         if not db_member:
             raise HTTPException(status_code=404, detail="Team member not found")
 

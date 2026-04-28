@@ -59,7 +59,12 @@ class EventService:
         )
 
     async def update_event(self, event_id: str, title: str, description: str, date: str, location: str, image: UploadFile | None) -> EventResponse:
-        db_event = await self.event_repo.get_by_id(event_id)
+        try:
+            target_uuid = uuid.UUID(event_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid event ID format")
+
+        db_event = await self.event_repo.get_by_id(target_uuid)
         if not db_event:
             raise HTTPException(status_code=404, detail="Event not found")
 
@@ -95,7 +100,12 @@ class EventService:
         )
 
     async def delete_event(self, event_id: str) -> None:
-        db_event = await self.event_repo.get_by_id(event_id)
+        try:
+            target_uuid = uuid.UUID(event_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid event ID format")
+
+        db_event = await self.event_repo.get_by_id(target_uuid)
         if not db_event:
             raise HTTPException(status_code=404, detail="Event not found")
 

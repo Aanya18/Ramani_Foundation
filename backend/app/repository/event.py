@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+import uuid
 from app.models import Event
 from app.core import cache, settings
 from typing import List
@@ -13,7 +14,7 @@ class EventRepository:
         result = await self.db.execute(select(Event).order_by(Event.created_at.desc()))
         return result.scalars().all()
 
-    async def get_by_id(self, event_id: str) -> Event | None:
+    async def get_by_id(self, event_id: uuid.UUID) -> Event | None:
         result = await self.db.execute(select(Event).where(Event.id == event_id))
         return result.scalars().first()
 
