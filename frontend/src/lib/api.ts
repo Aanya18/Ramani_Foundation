@@ -1,83 +1,85 @@
-/** Must match backend `API_V1_STR` (see FastAPI `main.py`). */
-const API_V1_PREFIX = "/api/v1";
-export const API_URL = `${process.env.NEXT_PUBLIC_API_URL}${API_V1_PREFIX}`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
 
-export type Event = {
-  id: number | string;
-  title: string;
-  description: string;
-  date: string;
-  location?: string;
-  image_url?: string | null;
+export async function apiRequest(endpoint: string, options: RequestInit = {}) {
+  const url = `${API_BASE_URL}${endpoint}`;
+  const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+  const headers: Record<string, string> = {
+    ...options.headers,
+  };
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export const api = {
+  // Public endpoints
+  getEvents: () => apiRequest("/public/events"),
+  getGallery: () => apiRequest("/public/gallery"),
+  getTeamMembers: () => apiRequest("/public/team-members"),
+  getTestimonials: () => apiRequest("/public/testimonials"),
+  getArticles: () => apiRequest("/public/articles"),
+  getDonations: () => apiRequest("/public/donations"),
+  getLeads: () => apiRequest("/public/leads"),
+  // Admin endpoints
+  getAdminEvents: () => apiRequest("/admin/events"),
+  createEvent: (data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("date", data.date);
+    formData.append("location", data.location);
+    if (data.image) formData.append("image", data.image);
+    return apiRequest("/admin/events", { method: "POST", body: formData });
+  },
+  updateEvent: (id: string, data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("date", data.date);
+    formData.append("location", data.location);
+    if (data.image) formData.append("image", data.image);
+    return apiRequest(`/admin/events/${id}`, { method: "PUT", body: formData });
+  },
+  deleteEvent: (id: string) => apiRequest(`/admin/events/${id}`, { method: "DELETE" }),
+  getAdminGallery: () => apiRequest("/admin/gallery"),
+  createGallery: (data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    if (data.image) formData.append("image", data.image);
+    if (data.event_id) formData.append("event_id", data.event_id);
+    return apiRequest("/admin/gallery", { method: "POST", body: formData });
+  },
+  updateGallery: (id: string, data: any) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    if (data.image) formData.append("image", data.image);
+    if (data.event_id) formData.append("event_id", data.event_id);
+    return apiRequest(`/admin/gallery/${id}`, { method: "PUT", body: formData });
+  },
+  deleteGallery: (id: string) => apiRequest(`/admin/gallery/${id}`, { method: "DELETE" }),
+  getAdminDonations: () => apiRequest("/admin/donations"),
+  createDonation: (data: any) => {
+    const formData = new FormData();
+    formData.append("donor_name", data.donor_name);
+    formData.append("email", data.email);
+    formData.append("amount", data.amount);
+    formData.append("proof_image", data.proof_image);
+    return apiRequest("/admin/donations", { method: "POST", body: formData });
+  },
+  verifyDonation: (id: string) => apiRequest(`/admin/donations/${id}/verify`, { method: "POST" }),
+  // Add more admin endpoints as needed
 };
-
-export type GalleryItem = {
-  id: number | string;
-  title: string;
-  image_url?: string | null;
-  event_id?: number | string | null;
-  event_title?: string | null;
-};
-
-export type TeamMember = {
-  id: number | string;
-  name: string;
-  role: string;
-  bio?: string | null;
-  image_url?: string | null;
-};
-
-export type Testimonial = {
-  id: number | string;
-  name: string;
-  role?: string | null;
-  content: string;
-  rating: number;
-  image_url?: string | null;
-};
-
-export type Article = {
-  id: number | string;
-  title: string;
-  content: string;
-  category?: string | null;
-  image_url?: string | null;
-  created_at: string;
-};
-
-export function mediaUrl(path: string | null | undefined): string {
-  if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path;
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
-}
-
-export async function fetchEvents(): Promise<Event[]> {
-  const res = await fetch(`${API_URL}/public/events`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch events');
-  return res.json();
-}
-
-export async function fetchGallery(): Promise<GalleryItem[]> {
-  const res = await fetch(`${API_URL}/public/gallery`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch gallery');
-  return res.json();
-}
-
-export async function fetchTeam(): Promise<TeamMember[]> {
-  const res = await fetch(`${API_URL}/public/team`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch team');
-  return res.json();
-}
-
-export async function fetchTestimonials(): Promise<Testimonial[]> {
-  const res = await fetch(`${API_URL}/public/testimonials`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch testimonials');
-  return res.json();
-}
-
-export async function fetchArticles(): Promise<Article[]> {
-  const res = await fetch(`${API_URL}/public/articles`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch articles');
-  return res.json();
-}
