@@ -3,14 +3,10 @@ from .private import event_router as private_event_router
 from .private import gallery_router as private_gallery_router
 from .private import lead_router as private_lead_router
 from .private import team_member_router as private_team_member_router
-from .private import article_router as private_article_router
-from .private import testimonial_router as private_testimonial_router
 from .public import auth_router as public_auth_router
 from .public import donation_router as public_donation_router
 from .public import event_router as public_event_router
 from .public import gallery_router as public_gallery_router
 from .public import lead_router as public_lead_router
 from .public import team_member_router as public_team_member_router
-from .public import article_router as public_article_router
-from .public import testimonial_router as public_testimonial_router
 from .public import images_router as public_images_router

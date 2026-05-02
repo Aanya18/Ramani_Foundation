@@ -1,5 +1,18 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
 
+export function getImageUrl(path: string | undefined | null) {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+
+  // Handle case where path already includes /api/v1 (e.g. from backend response)
+  if (path.startsWith("/api/v1")) {
+    const origin = API_BASE_URL.split("/api/v1")[0];
+    return `${origin}${path}`;
+  }
+
+  return `${API_BASE_URL}${path}`;
+}
+
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
@@ -30,8 +43,6 @@ export const api = {
   getEvents: () => apiRequest("/public/events"),
   getGallery: () => apiRequest("/public/gallery"),
   getTeamMembers: () => apiRequest("/public/team-members"),
-  getTestimonials: () => apiRequest("/public/testimonials"),
-  getArticles: () => apiRequest("/public/articles"),
   getDonations: () => apiRequest("/public/donations"),
   getLeads: () => apiRequest("/public/leads"),
   // Admin endpoints

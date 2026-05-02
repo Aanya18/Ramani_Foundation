@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { api } from "@/lib/api";
+import { api, getImageUrl } from "@/lib/api";
 import { Plus, Edit, Trash } from "lucide-react";
 
 interface GalleryItem {
@@ -49,7 +49,11 @@ function AdminGallery() {
   const loadItems = async () => {
     try {
       const data = await api.getAdminGallery();
-      setItems(data);
+      // Sort by created_at descending
+      const sorted = [...data].sort((a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setItems(sorted);
     } catch (error) {
       console.error("Failed to load gallery", error);
     }
@@ -109,7 +113,7 @@ function AdminGallery() {
           <Card key={item.id}>
             <CardHeader>
               <img
-                src={item.image_url}
+                src={getImageUrl(item.image_url)}
                 alt={item.title}
                 className="w-full h-48 object-cover rounded"
               />

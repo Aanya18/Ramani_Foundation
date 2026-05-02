@@ -64,20 +64,6 @@ function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="size-5" />
-              Leads
-            </CardTitle>
-            <CardDescription>Manage contact leads</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link to="/admin/leads">
-              <Button className="w-full">Manage Leads</Button>
-            </Link>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
               <Heart className="size-5" />
               Donations
             </CardTitle>

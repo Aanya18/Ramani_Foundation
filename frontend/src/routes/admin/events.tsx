@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { api } from "@/lib/api";
+import { api, getImageUrl } from "@/lib/api";
 import { Plus, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
 
@@ -58,7 +58,11 @@ function AdminEvents() {
   const loadEvents = async () => {
     try {
       const data = await api.getAdminEvents();
-      setEvents(data);
+      // Sort by date descending
+      const sorted = [...data].sort((a, b) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      setEvents(sorted);
     } catch (error) {
       console.error("Failed to load events", error);
     }
@@ -129,7 +133,7 @@ function AdminEvents() {
               {event.image_url && (
                 <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
                   <img
-                    src={event.image_url}
+                    src={getImageUrl(event.image_url)}
                     alt={event.title}
                     className="w-full h-full object-cover"
                   />
