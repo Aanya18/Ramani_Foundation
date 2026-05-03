@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
-import { api } from "@/lib/api";
+import { api, getImageUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -33,7 +33,22 @@ function GalleryPage() {
   const [filter, setFilter] = useState<(typeof cats)[number]>("All");
   const [open, setOpen] = useState<string | null>(null);
   const visible = items
-    .map((item) => ({ src: item.image_url, cat: "GENERAL", title: item.title, span: "" }))
+    .map((item, idx) => {
+      // Create some visual variety with spans
+      let span = "";
+      if (idx % 7 === 0) span = "md:col-span-2 md:row-span-2";
+      else if (idx % 7 === 3) span = "md:row-span-2";
+
+      return {
+        src: getImageUrl(item.image_url),
+        cat: item.title.includes("PAHAL") ? "PAHAL" :
+             item.title.includes("UDAAN") ? "UDAAN" :
+             item.title.includes("SHAKTI") ? "SHAKTI" :
+             item.title.includes("PRAYAAS") ? "PRAYAAS" : "All",
+        title: item.title,
+        span
+      };
+    })
     .filter((i) => filter === "All" || i.cat === filter);
 
   return (
@@ -66,7 +81,7 @@ function GalleryPage() {
             {visible.map((it, idx) => (
               <button
                 key={idx}
-                onClick={() => setOpen(it.src)}
+                onClick={() => setOpen(it.src ?? null)}
                 className={`group relative overflow-hidden rounded-2xl ${it.span} bg-muted shadow-soft hover:shadow-elevated transition-all`}
               >
                 <img

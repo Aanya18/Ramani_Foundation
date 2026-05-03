@@ -3,6 +3,4 @@ from .event import EventRepository
 from .gallery import GalleryRepository
 from .lead import LeadRepository
 from .team_member import TeamMemberRepository
-from .testimonial import TestimonialRepository
-from .article import ArticleRepository
 from .user import UserRepository

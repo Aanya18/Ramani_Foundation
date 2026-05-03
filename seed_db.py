@@ -15,8 +15,6 @@ from app.core import AsyncSessionLocal, Base, engine
 from app.models.event import Event
 from app.models.gallery import GalleryItem
 from app.models.team_member import TeamMember
-from app.models.testimonial import Testimonial
-from app.models.article import Article
 from sqlalchemy import delete
 
 async def seed():
@@ -26,8 +24,6 @@ async def seed():
             await db.execute(delete(GalleryItem))
             await db.execute(delete(Event))
             await db.execute(delete(TeamMember))
-            await db.execute(delete(Testimonial))
-            await db.execute(delete(Article))
             await db.commit()
 
             print("Seeding Events...")
@@ -59,18 +55,6 @@ async def seed():
             db.add_all([
                 TeamMember(name="Dr. Sarah Johnson", role="Medical Director", bio="Dedicated to improving community health."),
                 TeamMember(name="Michael Chen", role="Education Lead", bio="Passionate about innovative teaching methods."),
-            ])
-
-            print("Seeding Testimonials...")
-            db.add_all([
-                Testimonial(name="Robert Smith", role="Community Member", content="The foundation has truly changed our lives for the better.", rating=5),
-                Testimonial(name="Maria Garcia", role="Parent", content="My children now have access to quality education thanks to their scholarship program.", rating=5),
-            ])
-
-            print("Seeding Articles...")
-            db.add_all([
-                Article(title="The Importance of Early Childhood Education", content="Research shows that early childhood is the most critical period for brain development...", category="Education"),
-                Article(title="Sustainable Healthcare Solutions", content="How we are bringing quality healthcare to remote areas using mobile clinics...", category="Health"),
             ])
 
             await db.commit()

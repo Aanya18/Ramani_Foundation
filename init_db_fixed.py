@@ -14,11 +14,9 @@ from app.core import engine, Base
 from app.models.user import AdminUser
 from app.models.event import Event
 from app.models.gallery import GalleryItem
-from app.models.article import Article
 from app.models.donation import Donation
 from app.models.lead import Lead
 from app.models.team_member import TeamMember
-from app.models.testimonial import Testimonial
 
 async def init_db():
     async with engine.begin() as conn:

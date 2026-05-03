@@ -1,6 +1,7 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from app.core import settings
+from app.core.database import get_db
 from app.services import UserService
 from app.models import AdminUser
 
