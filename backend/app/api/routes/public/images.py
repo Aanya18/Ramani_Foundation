@@ -20,43 +20,26 @@ async def get_proxied_image(
     db: AsyncSession = Depends(get_db),
     image_service: ImageService = Depends()
 ):
-    # Try gallery item first (images are stored in GalleryImage table)
-    gallery_item = await db.get(GalleryItem, db_id)
-    if gallery_item:
-        gallery_image_stmt = (
-            select(GalleryImage)
-            .where(GalleryImage.gallery_item_id == db_id)
-            .order_by(GalleryImage.order.asc(), GalleryImage.created_at.asc())
-            .limit(1)
-        )
-        gallery_image = (await db.execute(gallery_image_stmt)).scalars().first()
+    # 1. Try GalleryImage directly (specific image in a gallery)
+    item = await db.get(GalleryImage, db_id)
 
-        if not gallery_image or not gallery_image.mega_file_id:
-            raise HTTPException(status_code=404, detail="Image not found")
+    # 2. Try GalleryItem (main image for a gallery)
+    if not item:
+        item = await db.get(GalleryItem, db_id)
+        # If it's a GalleryItem, it might have its own mega_file_id
+        # or we might need to fall back to its first GalleryImage
+        if item and not item.mega_file_id:
+            gallery_image_stmt = (
+                select(GalleryImage)
+                .where(GalleryImage.gallery_item_id == db_id)
+                .order_by(GalleryImage.order.asc(), GalleryImage.created_at.asc())
+                .limit(1)
+            )
+            item = (await db.execute(gallery_image_stmt)).scalars().first()
 
-        try:
-            image_bytes = await image_service.get_image(gallery_image.mega_file_id)
-        except HTTPException as e:
-            if e.status_code == 404 and gallery_image.mega_file_id:
-                gallery_image.mega_file_id = None
-                try:
-                    await db.commit()
-                except SQLAlchemyError:
-                    await db.rollback()
-            raise
-
-        return StreamingResponse(
-            io.BytesIO(image_bytes),
-            media_type=gallery_image.content_type,
-            headers={
-                "Content-Disposition": "inline",
-                "X-Content-Type-Options": "nosniff",
-                "Cache-Control": "public, max-age=3600"
-            }
-        )
-
-    # If not in Gallery, try Event
-    item = await db.get(Event, db_id)
+    # 3. Try Event
+    if not item:
+        item = await db.get(Event, db_id)
 
     # If not in Event, try Donation
     if not item:
