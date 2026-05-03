@@ -19,8 +19,19 @@ interface GalleryItem {
   title: string;
   image_url: string;
   event_id?: string;
+  project_id?: string;
   event_title?: string;
   created_at: string;
+}
+
+interface EventOption {
+  id: string;
+  title: string;
+}
+
+interface ProjectOption {
+  id: string;
+  name: string;
 }
 
 export const Route = createFileRoute("/admin/gallery")({
@@ -30,9 +41,11 @@ export const Route = createFileRoute("/admin/gallery")({
 function AdminGallery() {
   const navigate = useNavigate();
   const [items, setItems] = useState<GalleryItem[]>([]);
+  const [events, setEvents] = useState<EventOption[]>([]);
+  const [projects, setProjects] = useState<ProjectOption[]>([]);
   const [editing, setEditing] = useState<GalleryItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [form, setForm] = useState({ title: "", image: null as File | null, event_id: "" });
+  const [form, setForm] = useState({ title: "", image: null as File | null, event_id: "", project_id: "" });
 
   useEffect(() => {
     if (typeof window === 'undefined' || !localStorage.getItem("token")) {
@@ -40,10 +53,14 @@ function AdminGallery() {
       return;
     }
     loadItems();
+    loadEvents();
+    loadProjects();
   }, [navigate]);
 
   useEffect(() => {
     loadItems();
+    loadEvents();
+    loadProjects();
   }, []);
 
   const loadItems = async () => {
@@ -70,7 +87,7 @@ function AdminGallery() {
       loadItems();
       setIsDialogOpen(false);
       setEditing(null);
-      setForm({ title: "", image: null, event_id: "" });
+      setForm({ title: "", image: null, event_id: "", project_id: "" });
     } catch (error) {
       console.error("Failed to save gallery item", error);
     }
@@ -78,8 +95,31 @@ function AdminGallery() {
 
   const handleEdit = (item: GalleryItem) => {
     setEditing(item);
-    setForm({ title: item.title, image: null, event_id: item.event_id || "" });
+    setForm({
+      title: item.title,
+      image: null,
+      event_id: item.event_id || "",
+      project_id: item.project_id || "",
+    });
     setIsDialogOpen(true);
+  };
+
+  const loadEvents = async () => {
+    try {
+      const data = await api.getAdminEvents();
+      setEvents(data);
+    } catch (error) {
+      console.error("Failed to load events list", error);
+    }
+  };
+
+  const loadProjects = async () => {
+    try {
+      const data = await api.getAdminProjects();
+      setProjects(data);
+    } catch (error) {
+      console.error("Failed to load projects list", error);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -95,7 +135,7 @@ function AdminGallery() {
 
   const openAddDialog = () => {
     setEditing(null);
-    setForm({ title: "", image: null, event_id: "" });
+    setForm({ title: "", image: null, event_id: "", project_id: "" });
     setIsDialogOpen(true);
   };
 
@@ -112,11 +152,15 @@ function AdminGallery() {
         {items.map((item) => (
           <Card key={item.id}>
             <CardHeader>
-              <img
-                src={getImageUrl(item.image_url)}
-                alt={item.title}
-                className="w-full h-48 object-cover rounded"
-              />
+              {getImageUrl(item.image_url) ? (
+                <img
+                  src={getImageUrl(item.image_url) as string}
+                  alt={item.title}
+                  className="w-full h-48 object-cover rounded"
+                />
+              ) : (
+                <div className="w-full h-48 rounded bg-muted" />
+              )}
               <CardTitle>{item.title}</CardTitle>
             </CardHeader>
             <CardContent>
@@ -158,12 +202,36 @@ function AdminGallery() {
               />
             </div>
             <div>
-              <Label htmlFor="event_id">Event ID (optional)</Label>
-              <Input
+              <Label htmlFor="event_id">Event (optional)</Label>
+              <select
                 id="event_id"
                 value={form.event_id}
                 onChange={(e) => setForm({ ...form, event_id: e.target.value })}
-              />
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="">No event</option>
+                {events.map((event) => (
+                  <option key={event.id} value={event.id}>
+                    {event.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="project_id">Project (optional)</Label>
+              <select
+                id="project_id"
+                value={form.project_id}
+                onChange={(e) => setForm({ ...form, project_id: e.target.value })}
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="">No project</option>
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <Button type="submit">{editing ? "Update" : "Add"}</Button>
           </form>

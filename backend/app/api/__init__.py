@@ -2,6 +2,7 @@ from .routes import private_donation_router
 from .routes import private_event_router
 from .routes import private_gallery_router
 from .routes import private_lead_router
+from .routes import private_project_router
 from .routes import private_team_member_router
 from .routes import public_auth_router
 from .routes import public_donation_router

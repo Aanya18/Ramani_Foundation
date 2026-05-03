@@ -22,7 +22,13 @@ interface Event {
   description: string;
   date: string;
   location: string;
+  project_id?: string | null;
   image_url?: string;
+}
+
+interface Project {
+  id: string;
+  name: string;
 }
 
 export const Route = createFileRoute("/admin/events")({
@@ -32,6 +38,7 @@ export const Route = createFileRoute("/admin/events")({
 function AdminEvents() {
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [editing, setEditing] = useState<Event | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,6 +47,7 @@ function AdminEvents() {
     description: "",
     date: "",
     location: "",
+    project_id: "",
     image: null as File | null,
   });
 
@@ -49,10 +57,12 @@ function AdminEvents() {
       return;
     }
     loadEvents();
+    loadProjects();
   }, [navigate]);
 
   useEffect(() => {
     loadEvents();
+    loadProjects();
   }, []);
 
   const loadEvents = async () => {
@@ -82,7 +92,7 @@ function AdminEvents() {
       loadEvents();
       setIsDialogOpen(false);
       setEditing(null);
-      setForm({ title: "", description: "", date: "", location: "", image: null });
+      setForm({ title: "", description: "", date: "", location: "", project_id: "", image: null });
     } catch (error) {
       console.error("Failed to save event", error);
       toast.error("Failed to save event");
@@ -93,8 +103,24 @@ function AdminEvents() {
 
   const handleEdit = (event: Event) => {
     setEditing(event);
-    setForm({ ...event });
+    setForm({
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      location: event.location,
+      project_id: event.project_id || "",
+      image: null,
+    });
     setIsDialogOpen(true);
+  };
+
+  const loadProjects = async () => {
+    try {
+      const data = await api.getAdminProjects();
+      setProjects(data);
+    } catch (error) {
+      console.error("Failed to load projects", error);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -110,7 +136,7 @@ function AdminEvents() {
 
   const openAddDialog = () => {
     setEditing(null);
-    setForm({ title: "", description: "", date: "", location: "", image: null });
+    setForm({ title: "", description: "", date: "", location: "", project_id: "", image: null });
     setIsDialogOpen(true);
   };
 
@@ -197,6 +223,22 @@ function AdminEvents() {
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
                 required
               />
+            </div>
+            <div>
+              <Label htmlFor="project_id">Project (optional)</Label>
+              <select
+                id="project_id"
+                value={form.project_id}
+                onChange={(e) => setForm({ ...form, project_id: e.target.value })}
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="">No project</option>
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <Label htmlFor="image">Image</Label>

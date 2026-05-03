@@ -12,6 +12,7 @@ from .api import (
     private_event_router,
     private_gallery_router,
     private_lead_router,
+    private_project_router,
     private_donation_router,
     private_team_member_router
 )
@@ -40,6 +41,7 @@ app.include_router(public_images_router, prefix=f"{settings.API_V1_STR}/public/i
 app.include_router(private_event_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_gallery_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_lead_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
+app.include_router(private_project_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_donation_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_team_member_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 

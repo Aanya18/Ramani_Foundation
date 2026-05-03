@@ -81,7 +81,7 @@ function GalleryPage() {
             {visible.map((it, idx) => (
               <button
                 key={idx}
-                onClick={() => setOpen(it.src)}
+                onClick={() => setOpen(it.src ?? null)}
                 className={`group relative overflow-hidden rounded-2xl ${it.span} bg-muted shadow-soft hover:shadow-elevated transition-all`}
               >
                 <img
