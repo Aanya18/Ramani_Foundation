@@ -2,7 +2,7 @@ services:
   - type: web
     name: ramani-foundation-api
     runtime: python
-    pythonVersion: "3.11"
+    pythonVersion: "3.11.9"
     
     # Build configuration
     buildCommand: "pip install -r requirements.txt"
@@ -11,7 +11,7 @@ services:
     # Environment variables
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11"
+        value: "3.11.9"
       - key: ENVIRONMENT
         value: "production"
       - key: PORT
@@ -23,3 +23,4 @@ services:
     
     # Auto-deploy
     autoDeploy: true
+
