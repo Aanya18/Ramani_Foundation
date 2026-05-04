@@ -64,12 +64,23 @@ function EventsPage() {
                 key={event.id}
                 className="group relative bg-card rounded-3xl border border-border overflow-hidden shadow-soft hover:shadow-elevated transition-all hover:-translate-y-1"
               >
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img
-                    src={event.image_url ? getImageUrl(event.image_url) : "/placeholder.jpg"}
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+                <div className="aspect-[16/10] overflow-hidden relative bg-gradient-brand">
+                  {event.image_url ? (
+                    <>
+                      <img
+                        src={getImageUrl(event.image_url) as string}
+                        alt={event.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIgLz48L3N2Zz4=')] opacity-20" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Calendar className="size-16 text-white/60" />
+                      </div>
+                    </>
+                  )}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase text-[var(--brand-orange)] shadow-sm">
                     Upcoming
                   </div>
@@ -109,12 +120,21 @@ function EventsPage() {
                 key={event.id}
                 className="group bg-card/50 rounded-2xl border border-border/50 overflow-hidden hover:bg-card hover:border-border transition-all"
               >
-                <div className="aspect-video grayscale group-hover:grayscale-0 transition-all duration-500 overflow-hidden">
-                  <img
-                    src={event.image_url ? getImageUrl(event.image_url) : "/placeholder.jpg"}
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                <div className="aspect-video overflow-hidden relative bg-muted">
+                  {event.image_url ? (
+                    <img
+                      src={getImageUrl(event.image_url) as string}
+                      alt={event.title}
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                      onError={(e) => {
+                        console.error('Past event image failed to load:', event.title, event.image_url);
+                      }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Calendar className="size-12 text-muted-foreground/40" />
+                    </div>
+                  )}
                 </div>
                 <div className="p-5">
                   <h3 className="font-bold text-lg mb-2">{event.title}</h3>

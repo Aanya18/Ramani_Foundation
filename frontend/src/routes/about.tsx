@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
-import { Heart, Target, Eye, Users } from "lucide-react";
-import { api } from "@/lib/api";
+import { Heart, Target, Eye } from "lucide-react";
 import shakti from "@/assets/shakti-women.jpg";
 
 export const Route = createFileRoute("/about")({
@@ -16,19 +15,14 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About Ramani Foundation" },
       {
         property: "og:description",
-        content: "Our vision, mission and the team behind Ramani Foundation.",
+        content: "Our vision, mission and the work behind Ramani Foundation.",
       },
     ],
   }),
-  loader: async () => {
-    const team = await api.getTeamMembers();
-    return { team };
-  },
   component: AboutPage,
 });
 
 function AboutPage() {
-  const { team } = Route.useLoaderData();
   return (
     <>
       <PageHero
@@ -79,44 +73,6 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="section-y bg-gradient-soft">
-        <div className="container-page">
-          <div className="text-center max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-xs font-semibold tracking-wider uppercase text-[var(--brand-blue)]">
-              <Users className="size-3.5" /> Our Volunteers
-            </div>
-            <h2 className="mt-4 text-3xl md:text-5xl font-bold tracking-tight">
-              The hands behind the change
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              A growing team of volunteers contributing time, skill and heart.
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {team.map((member, i) => (
-              <div
-                key={member.name}
-                className="group bg-card rounded-2xl p-6 text-center border border-border shadow-soft hover:shadow-elevated transition-all hover:-translate-y-1"
-              >
-                <div
-                  className="mx-auto size-20 rounded-full grid place-items-center text-white text-2xl font-bold shadow-soft"
-                  style={{
-                    background: `linear-gradient(135deg, var(--brand-${["teal", "blue", "orange", "magenta"][i % 4]}), color-mix(in oklab, var(--brand-${["blue", "magenta", "teal", "orange"][i % 4]}) 80%, white))`,
-                  }}
-                >
-                  {member.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .slice(0, 2)
-                    .join("")}
-                </div>
-                <div className="mt-4 font-semibold">{member.name}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{member.role}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
 }

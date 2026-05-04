@@ -17,6 +17,7 @@ class GalleryImageCreate(GalleryImageBase):
 
 class GalleryImageResponse(GalleryImageBase):
     id: uuid.UUID
+    image_url: Optional[str] = None
     created_at: datetime
 
     class Config:

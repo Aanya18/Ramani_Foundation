@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 
 import appCss from "../styles.css?url";
+import ramaniFavicon from "@/assets/ramani-logo.png";
 
 function NotFoundComponent() {
   return (
@@ -46,6 +47,8 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
     ],
     links: [
+      { rel: "icon", type: "image/png", href: ramaniFavicon },
+      { rel: "apple-touch-icon", href: ramaniFavicon },
       { rel: "stylesheet", href: appCss },
       {
         rel: "stylesheet",

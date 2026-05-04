@@ -11,3 +11,4 @@ from .routes import public_gallery_router
 from .routes import public_lead_router
 from .routes import public_team_member_router
 from .routes import public_images_router
+from .routes import public_project_router

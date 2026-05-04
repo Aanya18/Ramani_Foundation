@@ -1,10 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { Heart, BookOpen, Stethoscope, Droplets, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/donate")({
   head: () => ({
@@ -34,13 +32,23 @@ const tiers = [
 ];
 
 function DonatePage() {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(1500);
   const [custom, setCustom] = useState("");
   const finalAmt = custom ? Number(custom) : selected;
 
+  const goToContact = () => {
+    navigate({
+      to: "/contact",
+      search: {
+        subject: "Donation inquiry",
+        amount: String(finalAmt || ""),
+      },
+    });
+  };
+
   return (
     <>
-      <Toaster richColors />
       <PageHero
         eyebrow="Donate"
         title="Fuel a future. Fund a smile."
@@ -126,7 +134,7 @@ function DonatePage() {
               </p>
               <Button
                 size="lg"
-                onClick={() => toast.success("Thank you! Payment integration coming soon.")}
+                onClick={goToContact}
                 className="mt-6 w-full rounded-full bg-white text-[var(--brand-blue)] hover:bg-white/90 font-semibold"
               >
                 Donate ₹{finalAmt ? finalAmt.toLocaleString() : 0} <Heart className="size-4" />
@@ -142,7 +150,11 @@ function DonatePage() {
               </ul>
               <div className="mt-6 pt-6 border-t border-white/20 text-xs text-white/80">
                 Prefer to talk first?{" "}
-                <Link to="/contact" className="underline font-semibold">
+                <Link
+                  to="/contact"
+                  search={{ subject: "Donation inquiry", amount: String(finalAmt || "") }}
+                  className="underline font-semibold"
+                >
                   Contact us
                 </Link>
               </div>

@@ -3,6 +3,26 @@ import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { api, getImageUrl } from "@/lib/api";
 
+interface GalleryImage {
+  id: string;
+  image_url: string;
+  image_filename: string;
+  order: number;
+}
+
+interface GalleryItem {
+  id: string;
+  title: string;
+  description?: string;
+  image_url?: string;
+  images: GalleryImage[];
+  project_id?: string;
+  project_name?: string;
+  event_id?: string;
+  event_title?: string;
+  created_at: string;
+}
+
 export const Route = createFileRoute("/gallery")({
   head: () => ({
     meta: [
@@ -20,8 +40,11 @@ export const Route = createFileRoute("/gallery")({
     ],
   }),
   loader: async () => {
-    const items = await api.getGallery();
-    return { items };
+    const [items, projects] = await Promise.all([
+      api.getGallery(),
+      api.getProjects().catch(() => []) // Fallback if projects API fails
+    ]);
+    return { items, projects };
   },
   component: GalleryPage,
 });
@@ -29,27 +52,68 @@ export const Route = createFileRoute("/gallery")({
 const cats = ["All", "PAHAL", "UDAAN", "SHAKTI", "PRAYAAS"] as const;
 
 function GalleryPage() {
-  const { items } = Route.useLoaderData();
+  const { items, projects } = Route.useLoaderData();
   const [filter, setFilter] = useState<(typeof cats)[number]>("All");
   const [open, setOpen] = useState<string | null>(null);
-  const visible = items
-    .map((item, idx) => {
+
+  // Create a map of project_id to project_name for easier lookup
+  const projectMap = new Map(
+    (projects || []).map((p: { id: string; name: string }) => [p.id, p.name])
+  );
+
+  // Flatten all images from all gallery items
+  const allImages = items.flatMap((item: GalleryItem, itemIdx: number) => {
+    const imgs = item.images && item.images.length > 0
+      ? item.images.map((img: GalleryImage) => ({
+          src: getImageUrl(img.image_url),
+          title: item.title,
+          description: item.description,
+          projectName: item.project_name || "",
+        }))
+      : item.image_url
+      ? [
+          {
+            src: getImageUrl(item.image_url),
+            title: item.title,
+            description: item.description,
+            projectName: item.project_name || "",
+          },
+        ]
+      : [];
+    return imgs;
+  });
+
+  // Filter images by project name
+  const visible = allImages
+    .map((img: any, idx: number) => {
       // Create some visual variety with spans
       let span = "";
       if (idx % 7 === 0) span = "md:col-span-2 md:row-span-2";
       else if (idx % 7 === 3) span = "md:row-span-2";
 
+      // Determine category based on project name (case-insensitive and check for partial match)
+      const projectNameUpper = (img.projectName || "").toUpperCase();
+      const titleUpper = (img.title || "").toUpperCase();
+      
+      const cat =
+        projectNameUpper.includes("PAHAL") || titleUpper.includes("PAHAL")
+          ? "PAHAL"
+          : projectNameUpper.includes("UDAAN") || titleUpper.includes("UDAAN")
+          ? "UDAAN"
+          : projectNameUpper.includes("SHAKTI") || titleUpper.includes("SHAKTI")
+          ? "SHAKTI"
+          : projectNameUpper.includes("PRAYAAS") || titleUpper.includes("PRAYAAS")
+          ? "PRAYAAS"
+          : "All";
+
       return {
-        src: getImageUrl(item.image_url),
-        cat: item.title.includes("PAHAL") ? "PAHAL" :
-             item.title.includes("UDAAN") ? "UDAAN" :
-             item.title.includes("SHAKTI") ? "SHAKTI" :
-             item.title.includes("PRAYAAS") ? "PRAYAAS" : "All",
-        title: item.title,
-        span
+        src: img.src,
+        cat,
+        title: img.title,
+        span,
       };
     })
-    .filter((i) => filter === "All" || i.cat === filter);
+    .filter((i: any) => filter === "All" || i.cat === filter);
 
   return (
     <>
@@ -78,7 +142,7 @@ function GalleryPage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-[180px] md:auto-rows-[220px] gap-3 md:gap-4">
-            {visible.map((it, idx) => (
+            {visible.map((it: any, idx: number) => (
               <button
                 key={idx}
                 onClick={() => setOpen(it.src ?? null)}

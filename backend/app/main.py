@@ -9,6 +9,7 @@ from .api import (
     public_donation_router,
     public_team_member_router,
     public_images_router,
+    public_project_router,
     private_event_router,
     private_gallery_router,
     private_lead_router,
@@ -35,6 +36,7 @@ app.include_router(public_gallery_router, prefix=f"{settings.API_V1_STR}/public"
 app.include_router(public_lead_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 app.include_router(public_donation_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 app.include_router(public_team_member_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
+app.include_router(public_project_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 app.include_router(public_images_router, prefix=f"{settings.API_V1_STR}/public/images", tags=["images"])
 
 # Include private routers

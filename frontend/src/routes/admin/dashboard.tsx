@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Image, MessageSquare, Heart } from "lucide-react";
+import { Calendar, FolderKanban, Heart, Image, MessageSquare } from "lucide-react";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: AdminDashboard,
@@ -32,6 +32,20 @@ function AdminDashboard() {
         </Button>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FolderKanban className="size-5" />
+              Projects
+            </CardTitle>
+            <CardDescription>Add and update foundation projects</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/admin/projects">
+              <Button className="w-full">Manage Projects</Button>
+            </Link>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -72,6 +86,21 @@ function AdminDashboard() {
           <CardContent>
             <Link to="/admin/donations">
               <Button className="w-full">View Donations</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="size-5" />
+              Contacts
+            </CardTitle>
+            <CardDescription>View public contact form submissions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/admin/contacts">
+              <Button className="w-full">View Contacts</Button>
             </Link>
           </CardContent>
         </Card>

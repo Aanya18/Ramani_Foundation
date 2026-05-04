@@ -18,23 +18,43 @@ class GalleryService:
 
     async def get_all_gallery_items(self) -> List[GalleryItemResponse]:
         gallery_items = await self.gallery_repo.get_all()
-        return [
-            GalleryItemResponse(
+        results = []
+        for item in gallery_items:
+            # Get first image URL - check images relationship first, then fallback to item's mega_file_id
+            image_url = None
+            if item.images and len(item.images) > 0:
+                # Sort by order and get first image
+                sorted_images = sorted(item.images, key=lambda img: (img.order, img.created_at))
+                image_url = f"{settings.API_V1_STR}/public/images/{sorted_images[0].id}"
+            elif item.mega_file_id:
+                image_url = f"{settings.API_V1_STR}/public/images/{item.id}"
+            
+            results.append(GalleryItemResponse(
                 id=item.id,
                 title=item.title,
                 description=item.description,
                 event_id=item.event_id,
                 project_id=item.project_id,
-                image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images else None,
+                image_url=image_url,
                 created_at=item.created_at
-            ) for item in gallery_items
-        ]
+            ))
+        return results
 
     async def get_gallery_by_event(self, event_id: uuid.UUID) -> List[GalleryItemDetailResponse]:
         gallery_items = await self.gallery_repo.get_by_event(event_id)
         results = []
         for item in gallery_items:
-            images = [GalleryImageResponse.from_orm(img) for img in item.images] if item.images else []
+            images = [
+                GalleryImageResponse(
+                    id=img.id,
+                    mega_file_id=img.mega_file_id,
+                    image_filename=img.image_filename,
+                    content_type=img.content_type,
+                    order=img.order,
+                    image_url=f"{settings.API_V1_STR}/public/images/{img.id}",
+                    created_at=img.created_at
+                ) for img in item.images
+            ] if item.images else []
             results.append(GalleryItemDetailResponse(
                 id=item.id,
                 title=item.title,
@@ -43,7 +63,7 @@ class GalleryService:
                 project_id=item.project_id,
                 event_title=item.event.title if item.event else None,
                 project_name=item.project.name if item.project else None,
-                image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images else None,
+                image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images or item.mega_file_id else None,
                 images=images,
                 created_at=item.created_at
             ))
@@ -53,7 +73,17 @@ class GalleryService:
         gallery_items = await self.gallery_repo.get_by_project(project_id)
         results = []
         for item in gallery_items:
-            images = [GalleryImageResponse.from_orm(img) for img in item.images] if item.images else []
+            images = [
+                GalleryImageResponse(
+                    id=img.id,
+                    mega_file_id=img.mega_file_id,
+                    image_filename=img.image_filename,
+                    content_type=img.content_type,
+                    order=img.order,
+                    image_url=f"{settings.API_V1_STR}/public/images/{img.id}",
+                    created_at=img.created_at
+                ) for img in item.images
+            ] if item.images else []
             results.append(GalleryItemDetailResponse(
                 id=item.id,
                 title=item.title,
@@ -62,7 +92,7 @@ class GalleryService:
                 project_id=item.project_id,
                 event_title=item.event.title if item.event else None,
                 project_name=item.project.name if item.project else None,
-                image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images else None,
+                image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images or item.mega_file_id else None,
                 images=images,
                 created_at=item.created_at
             ))
@@ -73,7 +103,17 @@ class GalleryService:
         if not item:
             return None
         
-        images = [GalleryImageResponse.from_orm(img) for img in item.images] if item.images else []
+        images = [
+            GalleryImageResponse(
+                id=img.id,
+                mega_file_id=img.mega_file_id,
+                image_filename=img.image_filename,
+                content_type=img.content_type,
+                order=img.order,
+                image_url=f"{settings.API_V1_STR}/public/images/{img.id}",
+                created_at=img.created_at
+            ) for img in item.images
+        ] if item.images else []
         return GalleryItemDetailResponse(
             id=item.id,
             title=item.title,
@@ -82,7 +122,7 @@ class GalleryService:
             project_id=item.project_id,
             event_title=item.event.title if item.event else None,
             project_name=item.project.name if item.project else None,
-            image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images else None,
+            image_url=f"{settings.API_V1_STR}/public/images/{item.id}" if item.images or item.mega_file_id else None,
             images=images,
             created_at=item.created_at
         )
@@ -153,7 +193,7 @@ class GalleryService:
         if image.content_type not in settings.ALLOWED_IMAGE_TYPES:
             raise HTTPException(status_code=400, detail="Invalid image type")
 
-        # Upload to Mega
+        # Store image in Mega storage
         mega_file_id = await self.image_service.upload_image(image)
 
         db_image = GalleryImage(
@@ -172,17 +212,40 @@ class GalleryService:
             gallery_item.image_filename = image.filename
             await self.gallery_repo.update(gallery_item)
         
-        return GalleryImageResponse.from_orm(created_image)
+        return GalleryImageResponse(
+            id=created_image.id,
+            mega_file_id=created_image.mega_file_id,
+            image_filename=created_image.image_filename,
+            content_type=created_image.content_type,
+            order=created_image.order,
+            image_url=f"{settings.API_V1_STR}/public/images/{created_image.id}",
+            created_at=created_image.created_at
+        )
 
     async def add_multiple_images(
         self, 
         gallery_item_id: uuid.UUID,
         images: List[UploadFile]
     ) -> List[GalleryImageResponse]:
-        """Add multiple images to a gallery item"""
+        """Add multiple images to a gallery item (appends after existing images)."""
+        if not images:
+            raise HTTPException(status_code=400, detail="At least one image is required")
+
+        gallery_item = await self.gallery_repo.get_by_id(gallery_item_id)
+        if not gallery_item:
+            raise HTTPException(status_code=404, detail="Gallery item not found")
+
+        existing = list(gallery_item.images or [])
+        if existing:
+            start_order = max((img.order for img in existing), default=-1) + 1
+        else:
+            start_order = 0
+
         results = []
-        for idx, image in enumerate(images):
-            result = await self.add_image_to_gallery(gallery_item_id, image, order=idx)
+        for offset, image in enumerate(images):
+            result = await self.add_image_to_gallery(
+                gallery_item_id, image, order=start_order + offset
+            )
             results.append(result)
         return results
 

@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
 from app.api.deps import get_db
+from app.core import settings
 from app.schemas.event import EventResponse
 from app.schemas.event_rsvp import EventRSVPResponse
 from app.services.event import EventService
@@ -67,7 +68,7 @@ async def get_event(
         is_upcoming=event.is_upcoming,
         accept_rsvp=event.accept_rsvp,
         accept_volunteers=event.accept_volunteers,
-        image_url=f"/api/v1/public/images/{event.id}" if event.mega_file_id else None,
+        image_url=f"{settings.API_V1_STR}/public/images/{event.id}" if event.mega_file_id else None,
         created_at=event.created_at
     )
 

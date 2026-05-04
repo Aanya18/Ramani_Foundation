@@ -16,9 +16,12 @@ export function getImageUrl(path: string | undefined | null) {
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
-  const headers: Record<string, string> = {
-    ...options.headers,
-  };
+  const headers: Record<string, string> = {};
+  
+  if (options.headers) {
+    Object.assign(headers, options.headers);
+  }
+  
   if (!(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
@@ -35,18 +38,41 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
 
-  return response.json();
+  if (response.status === 204) {
+    return null;
+  }
+
+  const text = await response.text();
+  if (!text) {
+    return null;
+  }
+
+  return JSON.parse(text);
 }
 
 export const api = {
   // Public endpoints
   getEvents: () => apiRequest("/public/events/"),
   getGallery: () => apiRequest("/public/gallery/"),
-  getTeamMembers: () => apiRequest("/public/team-members/"),
   getDonations: () => apiRequest("/public/donations/"),
   getLeads: () => apiRequest("/public/leads/"),
+  getProjects: () => apiRequest("/public/projects/"),
+  submitContact: (data: any) => apiRequest("/public/leads/contact", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
   // Admin endpoints
   getAdminProjects: () => apiRequest("/admin/projects/"),
+  createProject: (data: any) => apiRequest("/admin/projects/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }),
+  updateProject: (id: string, data: any) => apiRequest(`/admin/projects/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }),
+  deleteProject: (id: string) => apiRequest(`/admin/projects/${id}`, { method: "DELETE" }),
+  getContactSubmissions: () => apiRequest("/admin/leads/contact-submissions"),
   getAdminEvents: () => apiRequest("/admin/events/"),
   createEvent: (data: any) => {
     const formData = new FormData();
@@ -78,6 +104,14 @@ export const api = {
     if (data.image) formData.append("image", data.image);
     return apiRequest("/admin/gallery/", { method: "POST", body: formData });
   },
+  /** Append one or more images to an existing gallery item (multipart field name: images). */
+  addGalleryImagesBulk: (itemId: string, files: File[]) => {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append("images", file);
+    }
+    return apiRequest(`/admin/gallery/${itemId}/images/bulk`, { method: "POST", body: formData });
+  },
   updateGallery: async (id: string, data: any) => {
     const itemFormData = new FormData();
     itemFormData.append("title", data.title);
@@ -86,11 +120,8 @@ export const api = {
 
     const updatedItem = await apiRequest(`/admin/gallery/${id}`, { method: "PUT", body: itemFormData });
 
-    if (data.image) {
-      const imageFormData = new FormData();
-      imageFormData.append("image", data.image);
-      imageFormData.append("order", "0");
-      await apiRequest(`/admin/gallery/${id}/images`, { method: "POST", body: imageFormData });
+    if (data.images?.length) {
+      await api.addGalleryImagesBulk(id, data.images);
     }
 
     return updatedItem;
