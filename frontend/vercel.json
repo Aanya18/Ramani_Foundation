@@ -1,11 +1,4 @@
 {
   "buildCommand": "bun run build",
-  "outputDirectory": "dist",
-  "devCommand": "bun run dev",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "devCommand": "bun run dev"
 }
