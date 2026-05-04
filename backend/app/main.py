@@ -53,3 +53,9 @@ app.include_router(private_team_member_router, prefix=f"{settings.API_V1_STR}/ad
 @app.head("/")
 def read_root():
     return {"message": settings.ROOT_MESSAGE}
+
+
+@app.get(f"{settings.API_V1_STR}")
+@app.head(f"{settings.API_V1_STR}")
+def api_health():
+    return {"status": "ok", "message": "API is running"}
