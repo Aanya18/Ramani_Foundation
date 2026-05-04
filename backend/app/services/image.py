@@ -4,6 +4,7 @@ import uuid
 import asyncio
 import types
 from pathlib import Path
+from urllib.request import urlopen
 
 from fastapi import HTTPException, UploadFile
 
@@ -100,27 +101,26 @@ class ImageService:
             return cached
 
         try:
+            if stored_ref.startswith(("http://", "https://")):
+                # Public Mega links can be fetched directly; avoids auth/client compatibility failures.
+                with urlopen(stored_ref, timeout=20) as response:
+                    file_content = response.read()
+                if file_content:
+                    image_cache.set(stored_ref, file_content)
+                    return file_content
+                raise HTTPException(status_code=404, detail="Image not found")
+
             async with await self._open_mega_client() as client:
                 with tempfile.TemporaryDirectory() as temp_dir:
-                    if stored_ref.startswith(("http://", "https://")):
-                        download_results = await client.download_url(stored_ref, temp_dir)
-                    else:
-                        filesystem = await client.get_filesystem()
-                        if stored_ref not in filesystem:
-                            raise HTTPException(status_code=404, detail="Image not found")
+                    filesystem = await client.get_filesystem()
+                    if stored_ref not in filesystem:
+                        raise HTTPException(status_code=404, detail="Image not found")
 
-                        node = filesystem[stored_ref]
-                        output_path = await client.download(node, temp_dir)
-                        file_content = Path(output_path).read_bytes()
-                        if file_content:
-                            image_cache.set(stored_ref, file_content)
-                        return file_content
-
-                    if download_results is not None and getattr(download_results, "success", None):
-                        output_path = next(iter(download_results.success.values()))
-                        file_content = Path(output_path).read_bytes()
-                        if file_content:
-                            image_cache.set(stored_ref, file_content)
+                    node = filesystem[stored_ref]
+                    output_path = await client.download(node, temp_dir)
+                    file_content = Path(output_path).read_bytes()
+                    if file_content:
+                        image_cache.set(stored_ref, file_content)
                         return file_content
 
                 raise HTTPException(status_code=404, detail="Image not found")
