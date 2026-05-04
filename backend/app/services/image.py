@@ -4,6 +4,7 @@ import uuid
 import asyncio
 import types
 from pathlib import Path
+from urllib.request import urlopen
 
 from fastapi import HTTPException, UploadFile
 
@@ -18,6 +19,19 @@ if not hasattr(asyncio, "coroutine"):
 
 
 class ImageService:
+    @staticmethod
+    def _looks_like_image_bytes(data: bytes) -> bool:
+        if not data:
+            return False
+        # Common image signatures: jpeg, png, gif, webp
+        return (
+            data.startswith(b"\xff\xd8\xff")
+            or data.startswith(b"\x89PNG\r\n\x1a\n")
+            or data.startswith(b"GIF87a")
+            or data.startswith(b"GIF89a")
+            or (len(data) > 12 and data[0:4] == b"RIFF" and data[8:12] == b"WEBP")
+        )
+
     async def _open_mega_client(self):
         if not settings.MEGA_USER or not settings.MEGA_PASSWORD:
             raise HTTPException(
@@ -126,9 +140,28 @@ class ImageService:
 
                 raise HTTPException(status_code=404, detail="Image not found")
         except HTTPException:
+            # For public URLs, fallback to direct download when Mega client flow fails.
+            if stored_ref.startswith(("http://", "https://")):
+                try:
+                    with urlopen(stored_ref, timeout=20) as response:
+                        file_content = response.read()
+                    if self._looks_like_image_bytes(file_content):
+                        image_cache.set(stored_ref, file_content)
+                        return file_content
+                except Exception as fallback_exc:
+                    logger.error("Direct URL fallback failed for image: %s", fallback_exc)
             raise
         except Exception as exc:
             logger.error("Failed to read image from Mega: %s", exc)
+            if stored_ref.startswith(("http://", "https://")):
+                try:
+                    with urlopen(stored_ref, timeout=20) as response:
+                        file_content = response.read()
+                    if self._looks_like_image_bytes(file_content):
+                        image_cache.set(stored_ref, file_content)
+                        return file_content
+                except Exception as fallback_exc:
+                    logger.error("Direct URL fallback failed for image: %s", fallback_exc)
             raise HTTPException(status_code=404, detail="Image not found") from exc
 
     async def delete_image(self, stored_ref: str) -> None:
