@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
 from app.api.deps import get_db
+from app.core import settings
 from app.schemas.event import EventResponse
 from app.schemas.event_rsvp import EventRSVPResponse
 from app.services.event import EventService

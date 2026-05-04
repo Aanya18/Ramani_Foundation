@@ -1,16 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import select
-from app.core.database import get_db
-from app.models.gallery import GalleryItem, GalleryImage
-from app.models.event import Event
-from app.models.donation import Donation
-from app.models.team_member import TeamMember
-from app.services.image import ImageService
 import io
 import uuid
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+from app.models.donation import Donation
+from app.models.event import Event
+from app.models.gallery import GalleryImage, GalleryItem
+from app.models.team_member import TeamMember
+from app.services.image import ImageService
 
 router = APIRouter()
 
@@ -26,8 +28,8 @@ async def get_proxied_image(
     # 2. Try GalleryItem (main image for a gallery)
     if not item:
         item = await db.get(GalleryItem, db_id)
-        # If it's a GalleryItem, it might have its own mega_file_id
-        # or we might need to fall back to its first GalleryImage
+        # If it's a GalleryItem, it might have its own stored image
+        # or we might need to fall back to its first GalleryImage.
         if item and not item.mega_file_id:
             gallery_image_stmt = (
                 select(GalleryImage)
@@ -55,7 +57,7 @@ async def get_proxied_image(
     try:
         image_bytes = await image_service.get_image(item.mega_file_id)
     except HTTPException as e:
-        # Mega node deleted: clear stale reference to stop repeated failing loads.
+        # Clear stale references so repeated requests stop failing on the same row.
         if e.status_code == 404 and item.mega_file_id:
             item.mega_file_id = None
             try:

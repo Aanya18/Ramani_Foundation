@@ -11,3 +11,4 @@ from .public import gallery_router as public_gallery_router
 from .public import lead_router as public_lead_router
 from .public import team_member_router as public_team_member_router
 from .public import images_router as public_images_router
+from .public import project_router as public_project_router

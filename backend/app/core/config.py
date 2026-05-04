@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from typing import List, Union
+from typing import List, Optional, Union
 from pydantic import validator, Field
 
 class Settings(BaseSettings):
@@ -53,7 +53,6 @@ class Settings(BaseSettings):
     POSTGRES_POOL_PRE_PING: bool = Field(default=True)
 
     # File Uploads
-    UPLOADS_DIR: str
     MAX_FILE_SIZE_MB: int
     ALLOWED_IMAGE_TYPES: Union[str, List[str]]
 
@@ -62,6 +61,11 @@ class Settings(BaseSettings):
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         return v
+
+    # Mega Storage Settings
+    MEGA_USER: Optional[str] = None
+    MEGA_PASSWORD: Optional[str] = None
+    MEGA_ROOT_FOLDER: str = Field(default="NGO_UPLOADS")
 
     # Authentication URL
     AUTH_TOKEN_URL: str
@@ -75,11 +79,6 @@ class Settings(BaseSettings):
     PORT: int = Field(default=8000, description="Server port")
     HOST: str = Field(default="0.0.0.0", description="Server host")
     
-    # Mega.nz Settings
-    MEGA_USER: str
-    MEGA_PASSWORD: str
-    MEGA_ROOT_FOLDER: str = Field(default="NGO_UPLOADS")
-
     class Config:
         case_sensitive = True
         env_file = ".env"

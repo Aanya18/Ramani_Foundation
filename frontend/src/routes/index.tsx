@@ -33,7 +33,6 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
-  { value: "8+", label: "Active Volunteers" },
   { value: "4", label: "Flagship Projects" },
   { value: "20+", label: "Villages Reached" },
   { value: "500+", label: "Lives Impacted" },
@@ -110,11 +109,7 @@ function HomePage() {
         </div>
         <div className="relative container-page py-24 md:py-36 text-white">
           <div className="max-w-3xl anim-rise">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs font-semibold tracking-wider uppercase">
-              <span className="size-1.5 rounded-full bg-[var(--brand-orange)]" /> Annual Report
-              2024–25
-            </div>
-            <h1 className="mt-5 text-4xl md:text-7xl font-bold leading-[1.05] tracking-tight">
+            <h1 className="text-4xl md:text-7xl font-bold leading-[1.05] tracking-tight">
               Transforming lives through{" "}
               <span className="bg-gradient-to-r from-[oklch(0.92_0.10_60)] via-[oklch(0.85_0.14_350)] to-[oklch(0.85_0.14_200)] bg-clip-text text-transparent">
                 education & empowerment
@@ -149,7 +144,7 @@ function HomePage() {
         </div>
         {/* stats strip */}
         <div className="relative container-page pb-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 bg-white/95 backdrop-blur rounded-2xl p-4 md:p-6 shadow-elevated">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 bg-white/95 backdrop-blur rounded-2xl p-4 md:p-6 shadow-elevated">
             {stats.map((s) => (
               <div key={s.label} className="text-center px-2">
                 <div className="text-2xl md:text-4xl font-bold text-gradient-brand">{s.value}</div>

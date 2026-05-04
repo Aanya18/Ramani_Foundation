@@ -87,7 +87,7 @@ class EventService:
             if image.content_type not in settings.ALLOWED_IMAGE_TYPES:
                 raise HTTPException(status_code=400, detail="Invalid image type")
 
-            # Upload to Mega
+            # Store image in Mega storage
             mega_file_id = await self.image_service.upload_image(image)
             content_type = image.content_type
 
@@ -133,7 +133,7 @@ class EventService:
             if image.content_type not in settings.ALLOWED_IMAGE_TYPES:
                 raise HTTPException(status_code=400, detail="Invalid image type")
 
-            # Upload new image to Mega
+            # Store new image in Mega storage
             new_mega_file_id = await self.image_service.upload_image(image)
 
             # Delete old image if it exists

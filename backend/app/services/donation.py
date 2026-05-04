@@ -35,7 +35,7 @@ class DonationService:
         if proof_image.content_type not in settings.ALLOWED_IMAGE_TYPES:
             raise HTTPException(status_code=400, detail="Invalid image type")
 
-        # Upload to Mega
+        # Store proof image in Mega storage
         mega_file_id = await self.image_service.upload_image(proof_image)
 
         db_donation = Donation(

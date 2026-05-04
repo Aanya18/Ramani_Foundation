@@ -130,7 +130,7 @@ async def seed():
                 {"project_id": str(project.id), "title": gallery_title},
             )
             gallery_row = gallery_result.first()
-            gallery_item_id = uuid.UUID(gallery_row[0]) if gallery_row else None
+            gallery_item_id = uuid.UUID(str(gallery_row[0])) if gallery_row else None
 
             image_path = (scripts_dir / item["image_rel_path"]).resolve()
             if not image_path.exists():

@@ -4,15 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { api, getImageUrl } from "@/lib/api";
-import { Plus, Edit, Trash } from "lucide-react";
+import { Plus, Edit, Trash, Loader2 } from "lucide-react";
 
 interface GalleryItem {
   id: string;
@@ -21,6 +15,13 @@ interface GalleryItem {
   event_id?: string;
   project_id?: string;
   event_title?: string;
+  project_name?: string;
+  images?: Array<{
+    id: string;
+    image_url: string;
+    image_filename: string;
+    order: number;
+  }>;
   created_at: string;
 }
 
@@ -45,7 +46,14 @@ function AdminGallery() {
   const [projects, setProjects] = useState<ProjectOption[]>([]);
   const [editing, setEditing] = useState<GalleryItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [form, setForm] = useState({ title: "", image: null as File | null, event_id: "", project_id: "" });
+  const [form, setForm] = useState({
+    title: "",
+    images: [] as File[],
+    event_id: "",
+    project_id: "",
+  });
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !localStorage.getItem("token")) {
@@ -78,26 +86,45 @@ function AdminGallery() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
+    if (!editing && form.images.length === 0) {
+      setSubmitError("Select at least one image.");
+      return;
+    }
+    setIsSaving(true);
     try {
       if (editing) {
         await api.updateGallery(editing.id, form);
       } else {
-        await api.createGallery(form);
+        const [first, ...rest] = form.images;
+        const created = await api.createGallery({
+          title: form.title,
+          event_id: form.event_id,
+          project_id: form.project_id,
+          image: first,
+        });
+        if (rest.length > 0) {
+          await api.addGalleryImagesBulk(created.id, rest);
+        }
       }
       loadItems();
       setIsDialogOpen(false);
       setEditing(null);
-      setForm({ title: "", image: null, event_id: "", project_id: "" });
+      setForm({ title: "", images: [], event_id: "", project_id: "" });
     } catch (error) {
       console.error("Failed to save gallery item", error);
+      setSubmitError("Save failed. Check your connection and try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleEdit = (item: GalleryItem) => {
     setEditing(item);
+    setSubmitError(null);
     setForm({
       title: item.title,
-      image: null,
+      images: [],
       event_id: item.event_id || "",
       project_id: item.project_id || "",
     });
@@ -135,7 +162,8 @@ function AdminGallery() {
 
   const openAddDialog = () => {
     setEditing(null);
-    setForm({ title: "", image: null, event_id: "", project_id: "" });
+    setSubmitError(null);
+    setForm({ title: "", images: [], event_id: "", project_id: "" });
     setIsDialogOpen(true);
   };
 
@@ -145,7 +173,7 @@ function AdminGallery() {
         <h1 className="text-3xl font-bold">Manage Gallery</h1>
         <Button onClick={openAddDialog}>
           <Plus className="size-4 mr-2" />
-          Add Image
+          Add photos
         </Button>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -162,6 +190,17 @@ function AdminGallery() {
                 <div className="w-full h-48 rounded bg-muted" />
               )}
               <CardTitle>{item.title}</CardTitle>
+              {item.project_name && (
+                <p className="text-sm text-muted-foreground">Project: {item.project_name}</p>
+              )}
+              {item.event_title && (
+                <p className="text-sm text-muted-foreground">Event: {item.event_title}</p>
+              )}
+              {item.images && item.images.length > 0 && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  {item.images.length} image{item.images.length === 1 ? "" : "s"}
+                </p>
+              )}
             </CardHeader>
             <CardContent>
               <div className="flex gap-2 mt-4">
@@ -176,7 +215,13 @@ function AdminGallery() {
           </Card>
         ))}
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={(open) => {
+          if (!open && isSaving) return;
+          setIsDialogOpen(open);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Gallery Item" : "Add Gallery Item"}</DialogTitle>
@@ -189,25 +234,47 @@ function AdminGallery() {
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 required
+                disabled={isSaving}
               />
             </div>
             <div>
-              <Label htmlFor="image">Image</Label>
+              <Label htmlFor="images">
+                {editing ? "Add more images (optional)" : "Images"}
+              </Label>
               <Input
-                id="image"
+                id="images"
                 type="file"
                 accept="image/*"
-                onChange={(e) => setForm({ ...form, image: e.target.files?.[0] || null })}
+                multiple
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    images: e.target.files?.length ? Array.from(e.target.files) : [],
+                  })
+                }
                 required={!editing}
+                disabled={isSaving}
               />
+              {form.images.length > 0 && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {form.images.length} file{form.images.length === 1 ? "" : "s"} selected
+                </p>
+              )}
+              {editing && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  New uploads are added to this album without removing existing photos.
+                </p>
+              )}
             </div>
+            {submitError && <p className="text-sm text-destructive">{submitError}</p>}
             <div>
               <Label htmlFor="event_id">Event (optional)</Label>
               <select
                 id="event_id"
                 value={form.event_id}
                 onChange={(e) => setForm({ ...form, event_id: e.target.value })}
-                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                disabled={isSaving}
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm disabled:opacity-50"
               >
                 <option value="">No event</option>
                 {events.map((event) => (
@@ -223,7 +290,8 @@ function AdminGallery() {
                 id="project_id"
                 value={form.project_id}
                 onChange={(e) => setForm({ ...form, project_id: e.target.value })}
-                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                disabled={isSaving}
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm disabled:opacity-50"
               >
                 <option value="">No project</option>
                 {projects.map((project) => (
@@ -233,7 +301,22 @@ function AdminGallery() {
                 ))}
               </select>
             </div>
-            <Button type="submit">{editing ? "Update" : "Add"}</Button>
+            <Button type="submit" disabled={isSaving} className="min-w-[9rem]">
+              {isSaving ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  {editing
+                    ? form.images.length > 0
+                      ? "Uploading…"
+                      : "Saving…"
+                    : "Uploading…"}
+                </>
+              ) : editing ? (
+                "Update"
+              ) : (
+                "Add"
+              )}
+            </Button>
           </form>
         </DialogContent>
       </Dialog>
