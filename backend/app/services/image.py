@@ -1,6 +1,8 @@
 import logging
 import tempfile
 import uuid
+import asyncio
+import types
 from pathlib import Path
 
 from fastapi import HTTPException, UploadFile
@@ -9,6 +11,10 @@ from app.core.config import settings
 from app.core.memory_cache import image_cache
 
 logger = logging.getLogger(__name__)
+
+# Compatibility for older mega.py on Python 3.11+
+if not hasattr(asyncio, "coroutine"):
+    asyncio.coroutine = types.coroutine
 
 
 class ImageService:
@@ -129,3 +135,4 @@ class ImageService:
             logger.info("Skipping remote delete for Mega public link: %s", stored_ref)
         finally:
             image_cache.delete(stored_ref)
+
