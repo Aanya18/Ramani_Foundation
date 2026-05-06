@@ -19,7 +19,7 @@ async def get_all_gallery(
 ):
     """Get all gallery items with all images (admin only)"""
     service = GalleryService(db)
-    gallery_items = await service.gallery_repo.get_all()
+    gallery_items = await service.gallery_repo.get_all(include_event=True)
     results = []
     for item in gallery_items:
         images = [

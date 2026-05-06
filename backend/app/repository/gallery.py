@@ -13,13 +13,17 @@ class GalleryRepository:
         self.db = db
 
     @cache.memoize(tag="gallery", expire=settings.DEFAULT_CACHE_EXPIRE_SECONDS)
-    async def get_all(self) -> List[GalleryItem]:
+    async def get_all(self, include_event: bool = False) -> List[GalleryItem]:
+        options = [
+            selectinload(GalleryItem.project),
+            selectinload(GalleryItem.images),
+        ]
+        if include_event:
+            options.append(selectinload(GalleryItem.event))
+
         result = await self.db.execute(
             select(GalleryItem)
-            .options(
-                selectinload(GalleryItem.project),
-                selectinload(GalleryItem.images)
-            )
+            .options(*options)
             .order_by(GalleryItem.created_at.desc())
         )
         return result.scalars().all()
