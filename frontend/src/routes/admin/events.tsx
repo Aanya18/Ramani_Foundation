@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { api, getImageUrl } from "@/lib/api";
-import { Plus, Edit, Trash } from "lucide-react";
+import { Plus, Edit, Ticket, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 interface Event {
@@ -52,7 +52,7 @@ function AdminEvents() {
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !localStorage.getItem("token")) {
+    if (typeof window === "undefined" || !localStorage.getItem("token")) {
       navigate({ to: "/admin/login" });
       return;
     }
@@ -69,8 +69,8 @@ function AdminEvents() {
     try {
       const data = await api.getAdminEvents();
       // Sort by date descending
-      const sorted = [...data].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+      const sorted = [...data].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       );
       setEvents(sorted);
     } catch (error) {
@@ -159,7 +159,7 @@ function AdminEvents() {
               {event.image_url && (
                 <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
                   <img
-                    src={getImageUrl(event.image_url)}
+                    src={getImageUrl(event.image_url) ?? ""}
                     alt={event.title}
                     className="w-full h-full object-cover"
                   />
@@ -173,6 +173,11 @@ function AdminEvents() {
                 <Button size="sm" onClick={() => handleEdit(event)}>
                   <Edit className="size-4" />
                 </Button>
+                <Link to="/admin/rsvps">
+                  <Button size="sm" variant="outline">
+                    <Ticket className="size-4" />
+                  </Button>
+                </Link>
                 <Button size="sm" variant="destructive" onClick={() => handleDelete(event.id)}>
                   <Trash className="size-4" />
                 </Button>

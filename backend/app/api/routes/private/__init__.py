@@ -1,5 +1,6 @@
 from .donation import router as donation_router
 from .event import router as event_router
+from .event_rsvp import router as event_rsvp_router
 from .gallery import router as gallery_router
 from .lead import router as lead_router
 from .project import router as project_router

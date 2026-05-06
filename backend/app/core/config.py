@@ -71,6 +71,12 @@ class Settings(BaseSettings):
     # Authentication URL
     AUTH_TOKEN_URL: str
 
+    # Public app links
+    WHATSAPP_GROUP_URL: str = Field(
+        default="https://chat.whatsapp.com/your-mock-invite-link",
+        description="Public WhatsApp group invite URL shown in the RSVP flow",
+    )
+
     # Caching Settings
     CACHE_DIR: str
     DEFAULT_CACHE_EXPIRE_SECONDS: int

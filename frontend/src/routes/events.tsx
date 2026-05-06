@@ -1,7 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
-import { Calendar, MapPin, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, Loader2, Ticket, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast, Toaster } from "sonner";
 import { api, getImageUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/events")({
@@ -21,20 +33,87 @@ export const Route = createFileRoute("/events")({
     ],
   }),
   loader: async () => {
-    const events = await api.getEvents();
+    const [events, publicSettings] = await Promise.all([api.getEvents(), api.getPublicSettings()]);
+    const typedEvents = events as EventItem[];
+    const typedSettings = publicSettings as { whatsapp_group_url: string };
     const now = new Date();
-    const upcoming = events.filter((event) => new Date(event.date) >= now);
-    const past = events.filter((event) => new Date(event.date) < now);
-    return { upcoming, past };
+    const upcoming = typedEvents.filter((event) => new Date(event.date) >= now);
+    const past = typedEvents.filter((event) => new Date(event.date) < now);
+    return { upcoming, past, whatsappGroupUrl: typedSettings.whatsapp_group_url };
   },
   component: EventsPage,
 });
 
+type EventItem = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  image_url?: string | null;
+  accept_rsvp?: boolean;
+};
+
 function EventsPage() {
-  const { upcoming, past } = Route.useLoaderData();
+  const { upcoming, past, whatsappGroupUrl } = Route.useLoaderData() as {
+    upcoming: EventItem[];
+    past: EventItem[];
+    whatsappGroupUrl: string;
+  };
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rsvpForm, setRsvpForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    rsvp_status: "attending",
+    notes: "",
+  });
+
+  const openRsvp = (event: EventItem) => {
+    setSelectedEvent(event);
+    setRsvpForm({
+      name: "",
+      email: "",
+      phone: "",
+      rsvp_status: "attending",
+      notes: "",
+    });
+  };
+
+  const closeRsvp = () => {
+    setSelectedEvent(null);
+    setIsSubmitting(false);
+  };
+
+  const handleRsvpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedEvent || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await api.submitEventRsvp(selectedEvent.id, {
+        lead: {
+          name: rsvpForm.name,
+          email: rsvpForm.email,
+          phone: rsvpForm.phone || undefined,
+        },
+        rsvp_status: rsvpForm.rsvp_status,
+        is_volunteer: false,
+        notes: rsvpForm.notes || undefined,
+      });
+      toast.success("RSVP submitted successfully.");
+      closeRsvp();
+    } catch (error) {
+      console.error("Failed to submit RSVP", error);
+      toast.error("Could not submit RSVP. Please try again.");
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
+      <Toaster richColors />
       <PageHero
         eyebrow="Events"
         title="Where we're showing up"
@@ -88,18 +167,38 @@ function EventsPage() {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="font-bold text-xl mb-3 group-hover:text-[var(--brand-blue)] transition-colors">{event.title}</h3>
+                  <h3 className="font-bold text-xl mb-3 group-hover:text-[var(--brand-blue)] transition-colors">
+                    {event.title}
+                  </h3>
                   <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center gap-1.5">
                       <Calendar className="size-4 text-[var(--brand-orange)]" />
-                      {new Date(event.date).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                      {new Date(event.date).toLocaleDateString(undefined, { dateStyle: "long" })}
                     </div>
                     <div className="flex items-center gap-1.5">
                       <MapPin className="size-4 text-[var(--brand-orange)]" />
                       {event.location}
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{event.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                    {event.description}
+                  </p>
+
+                  <div className="mt-5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Users className="size-4 text-[var(--brand-blue)]" />
+                      {event.accept_rsvp === false ? "RSVP closed" : "RSVP open"}
+                    </div>
+                    <Button
+                      size="sm"
+                      className="rounded-full bg-gradient-brand text-white border-0 hover:opacity-90"
+                      onClick={() => openRsvp(event)}
+                      disabled={event.accept_rsvp === false}
+                    >
+                      <Ticket className="size-4 mr-2" />
+                      {event.accept_rsvp === false ? "Closed" : "RSVP Now"}
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -131,7 +230,11 @@ function EventsPage() {
                       decoding="async"
                       className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                       onError={(e) => {
-                        console.error('Past event image failed to load:', event.title, event.image_url);
+                        console.error(
+                          "Past event image failed to load:",
+                          event.title,
+                          event.image_url,
+                        );
                       }}
                     />
                   ) : (
@@ -158,6 +261,116 @@ function EventsPage() {
           </div>
         </div>
       </section>
+
+      <Dialog open={Boolean(selectedEvent)} onOpenChange={(open) => !open && closeRsvp()}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>RSVP for {selectedEvent?.title}</DialogTitle>
+            <DialogDescription>
+              Fill the details below to confirm your attendance.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleRsvpSubmit} className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="rsvp-name">Name</Label>
+                <Input
+                  id="rsvp-name"
+                  value={rsvpForm.name}
+                  onChange={(e) => setRsvpForm({ ...rsvpForm, name: e.target.value })}
+                  required
+                  disabled={isSubmitting}
+                  placeholder="Your name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="rsvp-email">Email</Label>
+                <Input
+                  id="rsvp-email"
+                  type="email"
+                  value={rsvpForm.email}
+                  onChange={(e) => setRsvpForm({ ...rsvpForm, email: e.target.value })}
+                  required
+                  disabled={isSubmitting}
+                  placeholder="you@email.com"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="rsvp-phone">Phone</Label>
+              <Input
+                id="rsvp-phone"
+                type="tel"
+                value={rsvpForm.phone}
+                onChange={(e) => setRsvpForm({ ...rsvpForm, phone: e.target.value })}
+                disabled={isSubmitting}
+                placeholder="+91 00000 00000"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="rsvp-status">RSVP Status</Label>
+              <select
+                id="rsvp-status"
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm"
+                value={rsvpForm.rsvp_status}
+                onChange={(e) => setRsvpForm({ ...rsvpForm, rsvp_status: e.target.value })}
+                disabled={isSubmitting}
+              >
+                <option value="attending">Attending</option>
+                <option value="maybe">Maybe</option>
+                <option value="not_attending">Not attending</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="rsvp-notes">Notes</Label>
+              <Textarea
+                id="rsvp-notes"
+                value={rsvpForm.notes}
+                onChange={(e) => setRsvpForm({ ...rsvpForm, notes: e.target.value })}
+                disabled={isSubmitting}
+                placeholder="Any dietary needs, arrival details, or message"
+                rows={4}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="button" variant="outline" onClick={closeRsvp} disabled={isSubmitting}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="rounded-full bg-gradient-brand text-white border-0 hover:opacity-90"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
+                {isSubmitting ? "Submitting..." : "Submit RSVP"}
+              </Button>
+            </div>
+
+            {whatsappGroupUrl && (
+              <div className="rounded-2xl border border-border bg-muted/40 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="font-semibold">Want group updates?</div>
+                    <p className="text-sm text-muted-foreground">
+                      Join our WhatsApp group for event reminders and quick updates.
+                    </p>
+                  </div>
+                  <Button asChild variant="secondary" className="rounded-full">
+                    <a href={whatsappGroupUrl} target="_blank" rel="noreferrer">
+                      Join WhatsApp Group
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

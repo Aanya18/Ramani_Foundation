@@ -1,5 +1,6 @@
 from .routes import private_donation_router
 from .routes import private_event_router
+from .routes import private_event_rsvp_router
 from .routes import private_gallery_router
 from .routes import private_lead_router
 from .routes import private_project_router
@@ -12,3 +13,4 @@ from .routes import public_lead_router
 from .routes import public_team_member_router
 from .routes import public_images_router
 from .routes import public_project_router
+from .routes import public_settings_router

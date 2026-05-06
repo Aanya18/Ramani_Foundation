@@ -1,5 +1,6 @@
 from .private import donation_router as private_donation_router
 from .private import event_router as private_event_router
+from .private import event_rsvp_router as private_event_rsvp_router
 from .private import gallery_router as private_gallery_router
 from .private import lead_router as private_lead_router
 from .private import project_router as private_project_router
@@ -12,3 +13,4 @@ from .public import lead_router as public_lead_router
 from .public import team_member_router as public_team_member_router
 from .public import images_router as public_images_router
 from .public import project_router as public_project_router
+from .public import settings_router as public_settings_router

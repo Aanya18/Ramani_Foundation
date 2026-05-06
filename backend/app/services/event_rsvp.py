@@ -1,5 +1,4 @@
-from sqlalchemy.orm import Session
-from app.models import EventRSVP, Lead, Event
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.event_rsvp import EventRSVPCreate, EventRSVPResponse, EventRSVPDetailResponse
 from app.repository.event_rsvp import EventRSVPRepository
 from app.schemas.lead import LeadCreate
@@ -9,7 +8,7 @@ from typing import List, Optional
 
 
 class EventRSVPService:
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
         self.repo = EventRSVPRepository(db)
         self.lead_service = LeadService(db)
@@ -19,7 +18,7 @@ class EventRSVPService:
         lead_data = rsvp_data.get("lead", {})
         
         # Get or create lead
-        lead = self.db.query(Lead).filter(Lead.email == lead_data.get("email")).first()
+        lead = await self.lead_service.get_by_email(lead_data.get("email"))
         if not lead:
             lead_create = LeadCreate(
                 type="event_attendee",

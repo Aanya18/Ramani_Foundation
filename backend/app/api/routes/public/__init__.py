@@ -6,3 +6,4 @@ from .lead import router as lead_router
 from .team_member import router as team_member_router
 from .images import router as images_router
 from .project import router as project_router
+from .settings import router as settings_router

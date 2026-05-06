@@ -1,5 +1,31 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
 
+type JsonRecord = Record<string, unknown>;
+
+type EventRequestData = {
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  project_id?: string;
+  image?: File | null;
+};
+
+type GalleryRequestData = {
+  title: string;
+  event_id?: string;
+  project_id?: string;
+  image?: File | null;
+  images?: File[];
+};
+
+type DonationRequestData = {
+  donor_name: string;
+  email: string;
+  amount: string;
+  proof_image: File | null;
+};
+
 export function getImageUrl(path: string | undefined | null) {
   if (!path) return null;
   if (path.startsWith("http")) return path;
@@ -15,13 +41,13 @@ export function getImageUrl(path: string | undefined | null) {
 
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
-  const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const headers: Record<string, string> = {};
-  
+
   if (options.headers) {
     Object.assign(headers, options.headers);
   }
-  
+
   if (!(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
@@ -53,28 +79,39 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
 export const api = {
   // Public endpoints
   getEvents: () => apiRequest("/public/events/"),
+  submitEventRsvp: (eventId: string, data: JsonRecord) =>
+    apiRequest(`/public/events/${eventId}/rsvp`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
   getGallery: () => apiRequest("/public/gallery/"),
   getDonations: () => apiRequest("/public/donations/"),
   getLeads: () => apiRequest("/public/leads/"),
   getProjects: () => apiRequest("/public/projects/"),
-  submitContact: (data: any) => apiRequest("/public/leads/contact", {
-    method: "POST",
-    body: JSON.stringify(data),
-  }),
+  getPublicSettings: () => apiRequest("/public/settings/"),
+  submitContact: (data: JsonRecord) =>
+    apiRequest("/public/leads/contact", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
   // Admin endpoints
   getAdminProjects: () => apiRequest("/admin/projects/"),
-  createProject: (data: any) => apiRequest("/admin/projects/", {
-    method: "POST",
-    body: JSON.stringify(data),
-  }),
-  updateProject: (id: string, data: any) => apiRequest(`/admin/projects/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  }),
+  createProject: (data: JsonRecord) =>
+    apiRequest("/admin/projects/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateProject: (id: string, data: JsonRecord) =>
+    apiRequest(`/admin/projects/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
   deleteProject: (id: string) => apiRequest(`/admin/projects/${id}`, { method: "DELETE" }),
   getContactSubmissions: () => apiRequest("/admin/leads/contact-submissions"),
   getAdminEvents: () => apiRequest("/admin/events/"),
-  createEvent: (data: any) => {
+  getEventRsvps: (eventId: string) => apiRequest(`/admin/event-rsvps/event/${eventId}`),
+  getEventRsvpStats: (eventId: string) => apiRequest(`/admin/event-rsvps/event/${eventId}/stats`),
+  createEvent: (data: EventRequestData) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
@@ -84,7 +121,7 @@ export const api = {
     if (data.image) formData.append("image", data.image);
     return apiRequest("/admin/events/", { method: "POST", body: formData });
   },
-  updateEvent: (id: string, data: any) => {
+  updateEvent: (id: string, data: EventRequestData) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
@@ -96,7 +133,7 @@ export const api = {
   },
   deleteEvent: (id: string) => apiRequest(`/admin/events/${id}`, { method: "DELETE" }),
   getAdminGallery: () => apiRequest("/admin/gallery/"),
-  createGallery: async (data: any) => {
+  createGallery: async (data: GalleryRequestData) => {
     const formData = new FormData();
     formData.append("title", data.title);
     if (data.event_id) formData.append("event_id", data.event_id);
@@ -112,13 +149,16 @@ export const api = {
     }
     return apiRequest(`/admin/gallery/${itemId}/images/bulk`, { method: "POST", body: formData });
   },
-  updateGallery: async (id: string, data: any) => {
+  updateGallery: async (id: string, data: GalleryRequestData) => {
     const itemFormData = new FormData();
     itemFormData.append("title", data.title);
     if (data.event_id) itemFormData.append("event_id", data.event_id);
     if (data.project_id !== undefined) itemFormData.append("project_id", data.project_id);
 
-    const updatedItem = await apiRequest(`/admin/gallery/${id}`, { method: "PUT", body: itemFormData });
+    const updatedItem = await apiRequest(`/admin/gallery/${id}`, {
+      method: "PUT",
+      body: itemFormData,
+    });
 
     if (data.images?.length) {
       await api.addGalleryImagesBulk(id, data.images);
@@ -128,12 +168,14 @@ export const api = {
   },
   deleteGallery: (id: string) => apiRequest(`/admin/gallery/${id}`, { method: "DELETE" }),
   getAdminDonations: () => apiRequest("/admin/donations/"),
-  createDonation: (data: any) => {
+  createDonation: (data: DonationRequestData) => {
     const formData = new FormData();
     formData.append("donor_name", data.donor_name);
     formData.append("email", data.email);
     formData.append("amount", data.amount);
-    formData.append("proof_image", data.proof_image);
+    if (data.proof_image) {
+      formData.append("proof_image", data.proof_image);
+    }
     return apiRequest("/admin/donations/", { method: "POST", body: formData });
   },
   verifyDonation: (id: string) => apiRequest(`/admin/donations/${id}/verify`, { method: "POST" }),
