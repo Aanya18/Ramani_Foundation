@@ -5,6 +5,6 @@ from app.services.team_member import TeamMemberService
 
 router = APIRouter()
 
-@router.get("/team", response_model=List[TeamMemberResponse])
+@router.get("/team-members", response_model=List[TeamMemberResponse])
 async def get_team(team_service: TeamMemberService = Depends()):
     return await team_service.get_all_members()

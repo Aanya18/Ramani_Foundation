@@ -1,17 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import SQLAlchemyError
-from app.core.database import get_db
-from app.models.gallery import GalleryItem
-from app.models.event import Event
-from app.models.donation import Donation
-from app.models.team_member import TeamMember
-from app.models.testimonial import Testimonial
-from app.models.article import Article
-from app.services.image import ImageService
 import io
 import uuid
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+from app.models.donation import Donation
+from app.models.event import Event
+from app.models.gallery import GalleryImage, GalleryItem
+from app.models.team_member import TeamMember
+from app.services.image import ImageService
 
 router = APIRouter()
 
@@ -21,10 +22,24 @@ async def get_proxied_image(
     db: AsyncSession = Depends(get_db),
     image_service: ImageService = Depends()
 ):
-    # Try searching in Gallery
-    item = await db.get(GalleryItem, db_id)
-    
-    # If not in Gallery, try Event
+    # 1. Try GalleryImage directly (specific image in a gallery)
+    item = await db.get(GalleryImage, db_id)
+
+    # 2. Try GalleryItem (main image for a gallery)
+    if not item:
+        item = await db.get(GalleryItem, db_id)
+        # If it's a GalleryItem, it might have its own stored image
+        # or we might need to fall back to its first GalleryImage.
+        if item and not item.mega_file_id:
+            gallery_image_stmt = (
+                select(GalleryImage)
+                .where(GalleryImage.gallery_item_id == db_id)
+                .order_by(GalleryImage.order.asc(), GalleryImage.created_at.asc())
+                .limit(1)
+            )
+            item = (await db.execute(gallery_image_stmt)).scalars().first()
+
+    # 3. Try Event
     if not item:
         item = await db.get(Event, db_id)
 
@@ -36,21 +51,13 @@ async def get_proxied_image(
     if not item:
         item = await db.get(TeamMember, db_id)
 
-    # If not in TeamMember, try Testimonial
-    if not item:
-        item = await db.get(Testimonial, db_id)
-
-    # If not in Testimonial, try Article
-    if not item:
-        item = await db.get(Article, db_id)
-    
     if not item or not item.mega_file_id:
         raise HTTPException(status_code=404, detail="Image not found")
 
     try:
-        image_bytes = await image_service.get_image(item.mega_file_id)
+        image_bytes = await image_service.get_image(item.mega_file_id, getattr(item, "content_type", None))
     except HTTPException as e:
-        # Mega node deleted: clear stale reference to stop repeated failing loads.
+        # Clear stale references so repeated requests stop failing on the same row.
         if e.status_code == 404 and item.mega_file_id:
             item.mega_file_id = None
             try:

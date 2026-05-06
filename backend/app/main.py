@@ -8,16 +8,14 @@ from .api import (
     public_lead_router,
     public_donation_router,
     public_team_member_router,
-    public_testimonial_router,
-    public_article_router,
     public_images_router,
+    public_project_router,
     private_event_router,
     private_gallery_router,
     private_lead_router,
+    private_project_router,
     private_donation_router,
-    private_team_member_router,
-    private_testimonial_router,
-    private_article_router
+    private_team_member_router
 )
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -38,18 +36,16 @@ app.include_router(public_gallery_router, prefix=f"{settings.API_V1_STR}/public"
 app.include_router(public_lead_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 app.include_router(public_donation_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 app.include_router(public_team_member_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
-app.include_router(public_testimonial_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
-app.include_router(public_article_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
+app.include_router(public_project_router, prefix=f"{settings.API_V1_STR}/public", tags=["public"])
 app.include_router(public_images_router, prefix=f"{settings.API_V1_STR}/public/images", tags=["images"])
 
 # Include private routers
 app.include_router(private_event_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_gallery_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_lead_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
+app.include_router(private_project_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_donation_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 app.include_router(private_team_member_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
-app.include_router(private_testimonial_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
-app.include_router(private_article_router, prefix=f"{settings.API_V1_STR}/admin", tags=["admin"])
 
 
 
@@ -57,3 +53,9 @@ app.include_router(private_article_router, prefix=f"{settings.API_V1_STR}/admin"
 @app.head("/")
 def read_root():
     return {"message": settings.ROOT_MESSAGE}
+
+
+@app.get(f"{settings.API_V1_STR}")
+@app.head(f"{settings.API_V1_STR}")
+def api_health():
+    return {"status": "ok", "message": "API is running"}

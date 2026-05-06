@@ -13,3 +13,4 @@ backend/.ven
 node_modules/
 *.log
 *.db
+frontend/.next
