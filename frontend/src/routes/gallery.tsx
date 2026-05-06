@@ -40,11 +40,8 @@ export const Route = createFileRoute("/gallery")({
     ],
   }),
   loader: async () => {
-    const [items, projects] = await Promise.all([
-      api.getGallery(),
-      api.getProjects().catch(() => []) // Fallback if projects API fails
-    ]);
-    return { items, projects };
+    const items = await api.getGallery();
+    return { items };
   },
   component: GalleryPage,
 });
@@ -52,14 +49,9 @@ export const Route = createFileRoute("/gallery")({
 const cats = ["All", "PAHAL", "UDAAN", "SHAKTI", "PRAYAAS"] as const;
 
 function GalleryPage() {
-  const { items, projects } = Route.useLoaderData();
+  const { items } = Route.useLoaderData();
   const [filter, setFilter] = useState<(typeof cats)[number]>("All");
   const [open, setOpen] = useState<string | null>(null);
-
-  // Create a map of project_id to project_name for easier lookup
-  const projectMap = new Map(
-    (projects || []).map((p: { id: string; name: string }) => [p.id, p.name])
-  );
 
   // Flatten all images from all gallery items
   const allImages = items.flatMap((item: GalleryItem, itemIdx: number) => {

@@ -17,7 +17,6 @@ class GalleryRepository:
         result = await self.db.execute(
             select(GalleryItem)
             .options(
-                selectinload(GalleryItem.event),
                 selectinload(GalleryItem.project),
                 selectinload(GalleryItem.images)
             )

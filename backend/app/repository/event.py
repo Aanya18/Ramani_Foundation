@@ -16,11 +16,6 @@ class EventRepository:
     async def get_all(self) -> List[Event]:
         result = await self.db.execute(
             select(Event)
-            .options(
-                selectinload(Event.project),
-                selectinload(Event.gallery_items),
-                selectinload(Event.rsvps)
-            )
             .order_by(Event.created_at.desc())
         )
         return result.scalars().all()
@@ -28,11 +23,6 @@ class EventRepository:
     async def get_upcoming(self) -> List[Event]:
         result = await self.db.execute(
             select(Event)
-            .options(
-                selectinload(Event.project),
-                selectinload(Event.gallery_items),
-                selectinload(Event.rsvps)
-            )
             .where(Event.is_upcoming == True)
             .order_by(Event.date)
         )
@@ -53,10 +43,6 @@ class EventRepository:
     async def get_by_project(self, project_id: uuid.UUID) -> List[Event]:
         result = await self.db.execute(
             select(Event)
-            .options(
-                selectinload(Event.gallery_items),
-                selectinload(Event.rsvps)
-            )
             .where(Event.project_id == project_id)
             .order_by(Event.date)
         )

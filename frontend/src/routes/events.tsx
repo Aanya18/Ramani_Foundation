@@ -70,6 +70,8 @@ function EventsPage() {
                       <img
                         src={getImageUrl(event.image_url) as string}
                         alt={event.title}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     </>
@@ -125,6 +127,8 @@ function EventsPage() {
                     <img
                       src={getImageUrl(event.image_url) as string}
                       alt={event.title}
+                      loading="lazy"
+                      decoding="async"
                       className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                       onError={(e) => {
                         console.error('Past event image failed to load:', event.title, event.image_url);

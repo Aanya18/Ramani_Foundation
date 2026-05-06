@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from typing import List, Optional
+from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
@@ -43,7 +43,6 @@ async def get_all_gallery(db: AsyncSession = Depends(get_db)):
             description=item.description,
             event_id=item.event_id,
             project_id=item.project_id,
-            event_title=item.event.title if item.event else None,
             project_name=item.project.name if item.project else None,
             image_url=image_url,
             images=images,
