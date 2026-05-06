@@ -6,7 +6,7 @@ import shakti from "@/assets/shakti-women.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Ramani Foundation" },
+      { title: "About - Ramani Foundation" },
       {
         name: "description",
         content:

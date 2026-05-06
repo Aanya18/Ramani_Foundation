@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/donate")({
   head: () => ({
     meta: [
-      { title: "Donate — Ramani Foundation" },
+      { title: "Donate - Ramani Foundation" },
       {
         name: "description",
         content:

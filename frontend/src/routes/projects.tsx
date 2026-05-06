@@ -9,13 +9,13 @@ import udaan from "@/assets/udaan-celebration.jpg";
 export const Route = createFileRoute("/projects")({
   head: () => ({
     meta: [
-      { title: "Projects — Ramani Foundation" },
+      { title: "Projects - Ramani Foundation" },
       {
         name: "description",
         content:
           "Explore Ramani Foundation's flagship projects: PAHAL (education), UDAAN (collaboration), SHAKTI (women empowerment) and PRAYAAS (infrastructure).",
       },
-      { property: "og:title", content: "Our Projects — Ramani Foundation" },
+      { property: "og:title", content: "Our Projects - Ramani Foundation" },
       {
         property: "og:description",
         content:
@@ -65,7 +65,7 @@ const projects = [
     img: shakti,
     objective: "To empower women by introducing new schemes and promoting self-reliance.",
     activities: [
-      "Skill development workshops — tailoring, handicrafts, digital literacy.",
+      "Skill development workshops, tailoring, handicrafts, digital literacy.",
       "Micro-finance and small business support schemes.",
       "Health awareness and wellness camps.",
       "Legal literacy on women's rights and self-defence.",

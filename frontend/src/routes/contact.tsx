@@ -13,7 +13,7 @@ import { api } from "@/lib/api";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Ramani Foundation" },
+      { title: "Contact - Ramani Foundation" },
       {
         name: "description",
         content:
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact Ramani Foundation" },
       {
         property: "og:description",
-        content: "Volunteer, partner, or reach out — we'd love to hear from you.",
+        content: "Volunteer, partner, or reach out, we'd love to hear from you.",
       },
     ],
   }),
@@ -70,7 +70,7 @@ function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Let's build change together"
-        description="Whether you'd like to volunteer, partner, or simply learn more — we'd love to hear from you."
+        description="Whether you'd like to volunteer, partner, or simply learn more, we'd love to hear from you."
       />
       <section className="section-y">
         <div className="container-page grid lg:grid-cols-5 gap-10">

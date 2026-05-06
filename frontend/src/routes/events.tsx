@@ -19,13 +19,13 @@ import { api, getImageUrl } from "@/lib/api";
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events — Ramani Foundation" },
+      { title: "Events - Ramani Foundation" },
       {
         name: "description",
         content:
-          "Upcoming and recent events by Ramani Foundation — health camps, education drives, women empowerment workshops and community celebrations.",
+          "Upcoming and recent events by Ramani Foundation, health camps, education drives, women empowerment workshops and community celebrations.",
       },
-      { property: "og:title", content: "Events — Ramani Foundation" },
+      { property: "og:title", content: "Events - Ramani Foundation" },
       {
         property: "og:description",
         content: "Join our health camps, education drives and community workshops.",
@@ -126,7 +126,7 @@ function EventsPage() {
       <PageHero
         eyebrow="Events"
         title="Where we're showing up"
-        description="Be part of upcoming camps, workshops and drives — or relive moments from past events."
+        description="Be part of upcoming camps, workshops and drives, or relive moments from past events."
       />
 
       <section className="section-y">

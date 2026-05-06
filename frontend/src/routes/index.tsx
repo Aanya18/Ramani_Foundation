@@ -21,7 +21,7 @@ import g8 from "@/assets/gallery/g8.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ramani Foundation — Education, Empowerment, Community" },
+      { title: "Ramani Foundation - Education, Empowerment, Community" },
       {
         name: "description",
         content:
@@ -116,7 +116,7 @@ function HomePage() {
               </span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl leading-relaxed">
-              Ramani Foundation works at the grassroots — uplifting underprivileged communities
+              Ramani Foundation works at the grassroots, uplifting underprivileged communities
               through education, healthcare, women empowerment and child development.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -219,7 +219,7 @@ function HomePage() {
           <SectionHeader
             eyebrow="What we focus on"
             title="Our working verticals"
-            description="A holistic approach to community transformation — built around four pillars."
+            description="A holistic approach to community transformation, built around four pillars."
           />
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {verticals.map((v) => (

@@ -30,7 +30,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ramani Foundation — Transforming Lives Through Education & Empowerment" },
+      { title: "Ramani Foundation - Transforming Lives Through Education & Empowerment" },
       {
         name: "description",
         content:

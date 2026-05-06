@@ -26,13 +26,13 @@ interface GalleryItem {
 export const Route = createFileRoute("/gallery")({
   head: () => ({
     meta: [
-      { title: "Gallery — Ramani Foundation" },
+      { title: "Gallery - Ramani Foundation" },
       {
         name: "description",
         content:
-          "Moments from the field — children, women, and communities Ramani Foundation works with across PAHAL, UDAAN, SHAKTI and PRAYAAS.",
+          "Moments from the field, children, women, and communities Ramani Foundation works with across PAHAL, UDAAN, SHAKTI and PRAYAAS.",
       },
-      { property: "og:title", content: "Gallery — Ramani Foundation" },
+      { property: "og:title", content: "Gallery - Ramani Foundation" },
       {
         property: "og:description",
         content: "Moments from our work in education, women empowerment and community care.",
