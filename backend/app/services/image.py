@@ -1,11 +1,15 @@
+import asyncio
 import logging
 import tempfile
 import uuid
-import asyncio
-import types
+from functools import partial
 from pathlib import Path
 from urllib.request import urlopen
+from urllib.parse import quote
 
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 from fastapi import HTTPException, UploadFile
 
 from app.core.config import settings
@@ -13,9 +17,31 @@ from app.core.memory_cache import image_cache
 
 logger = logging.getLogger(__name__)
 
-# Compatibility for older mega.py on Python 3.11+
-if not hasattr(asyncio, "coroutine"):
-    asyncio.coroutine = types.coroutine
+
+class CloudinaryManager:
+    _configured = False
+    _lock = asyncio.Lock()
+
+    @classmethod
+    async def configure(cls) -> None:
+        async with cls._lock:
+            if cls._configured:
+                return
+
+            if not settings.CLOUDINARY_CLOUD_NAME:
+                raise HTTPException(status_code=500, detail="Cloudinary cloud name is not configured")
+            if not settings.CLOUDINARY_API_KEY:
+                raise HTTPException(status_code=500, detail="Cloudinary API key is not configured")
+            if not settings.CLOUDINARY_API_SECRET:
+                raise HTTPException(status_code=500, detail="Cloudinary API secret is not configured")
+
+            cloudinary.config(
+                cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+                api_key=settings.CLOUDINARY_API_KEY,
+                api_secret=settings.CLOUDINARY_API_SECRET,
+                secure=True,
+            )
+            cls._configured = True
 
 
 class ImageService:
@@ -23,7 +49,6 @@ class ImageService:
     def _looks_like_image_bytes(data: bytes) -> bool:
         if not data:
             return False
-        # Common image signatures: jpeg, png, gif, webp
         return (
             data.startswith(b"\xff\xd8\xff")
             or data.startswith(b"\x89PNG\r\n\x1a\n")
@@ -32,86 +57,41 @@ class ImageService:
             or (len(data) > 12 and data[0:4] == b"RIFF" and data[8:12] == b"WEBP")
         )
 
-    async def _create_mega_client(self, login: bool = True):
-        if not settings.MEGA_USER or not settings.MEGA_PASSWORD:
-            if login:
-                raise HTTPException(
-                    status_code=500,
-                    detail="Mega credentials are not configured",
-                )
+    @staticmethod
+    def _cloudinary_url(public_id: str) -> str:
+        cloud_name = settings.CLOUDINARY_CLOUD_NAME
+        if not cloud_name:
+            raise HTTPException(status_code=500, detail="Cloudinary cloud name is not configured")
+        return f"https://res.cloudinary.com/{cloud_name}/image/upload/{quote(public_id, safe='/')}"
 
-        try:
-            from mega.client import MegaNzClient
-        except ImportError as exc:
-            raise HTTPException(
-                status_code=500,
-                detail="Mega client is not installed",
-            ) from exc
+    @staticmethod
+    def _content_type_to_extension(content_type: str | None) -> str | None:
+        if not content_type:
+            return None
 
-        mega = MegaNzClient()
-        if not login:
-            return mega
+        return {
+            "image/jpeg": "jpg",
+            "image/jpg": "jpg",
+            "image/png": "png",
+            "image/gif": "gif",
+            "image/webp": "webp",
+            "image/bmp": "bmp",
+            "image/tiff": "tiff",
+        }.get(content_type.lower())
 
-        try:
-            await mega.login(settings.MEGA_USER, settings.MEGA_PASSWORD)
-            return mega
-        except Exception as exc:
-            try:
-                await mega.close()
-            except Exception:
-                pass
-            logger.error("Failed to initialize Mega client: %s", exc)
-            raise HTTPException(
-                status_code=500,
-                detail="Failed to initialize Mega storage",
-            ) from exc
+    def _cloudinary_delivery_url(self, public_id: str, content_type: str | None = None) -> str:
+        if public_id.startswith(("http://", "https://")):
+            return public_id
 
-    async def _download_public_image(self, stored_ref: str) -> bytes | None:
-        try:
-            async with await self._create_mega_client(login=False) as client:
-                with tempfile.TemporaryDirectory() as temp_dir:
-                    download_results = await client.download_url(stored_ref, temp_dir)
-                    if download_results is not None and getattr(download_results, "success", None):
-                        output_path = next(iter(download_results.success.values()))
-                        file_content = Path(output_path).read_bytes()
-                        if file_content and self._looks_like_image_bytes(file_content):
-                            return file_content
-        except Exception as exc:
-            logger.warning("Public Mega download failed for %s: %s", stored_ref, exc)
-
-        try:
-            with urlopen(stored_ref, timeout=20) as response:
-                file_content = response.read()
-            if self._looks_like_image_bytes(file_content):
-                return file_content
-        except Exception as exc:
-            logger.error("Direct URL fallback failed for image: %s", exc)
-
-        return None
-
-    async def _get_root_folder(self, client):
-        folder_name = settings.MEGA_ROOT_FOLDER
-
-        try:
-            folder = await client.find(folder_name)
-            if folder:
-                return folder.id
-
-            created = await client.create_folder(folder_name)
-            return created.id
-        except Exception as exc:
-            logger.error("Failed to resolve Mega root folder: %s", exc)
-            raise HTTPException(
-                status_code=500,
-                detail="Failed to resolve Mega upload folder",
-            ) from exc
-
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to resolve Mega upload folder",
-        )
+        base_url = self._cloudinary_url(public_id)
+        extension = self._content_type_to_extension(content_type)
+        if extension and not base_url.lower().endswith(f".{extension}"):
+            return f"{base_url}.{extension}"
+        return base_url
 
     async def upload_image(self, file: UploadFile) -> str:
+        await CloudinaryManager.configure()
+
         content = await file.read()
         suffix = Path(file.filename or "").suffix.lower() or ".jpg"
         remote_name = f"{uuid.uuid4().hex}{suffix}"
@@ -119,18 +99,23 @@ class ImageService:
 
         try:
             temp_path.write_bytes(content)
-            async with await self._create_mega_client(login=True) as client:
-                folder = await self._get_root_folder(client)
-                uploaded = await client.upload(str(temp_path), folder)
-                public_link = await client.get_public_link(uploaded)
-                if not public_link:
-                    raise HTTPException(status_code=500, detail="Failed to create Mega link")
-                return public_link
+            upload_result = await asyncio.to_thread(
+                cloudinary.uploader.upload,
+                str(temp_path),
+                folder=settings.CLOUDINARY_FOLDER,
+                resource_type="image",
+                overwrite=False,
+                unique_filename=True,
+            )
+            public_id = upload_result.get("public_id")
+            if not public_id:
+                raise HTTPException(status_code=500, detail="Failed to upload image to Cloudinary")
+            return public_id
         except HTTPException:
             raise
         except Exception as exc:
-            logger.error("Failed to upload image to Mega: %s", exc)
-            raise HTTPException(status_code=500, detail="Failed to upload image") from exc
+            logger.error("Failed to upload image to Cloudinary: %s", exc)
+            raise HTTPException(status_code=500, detail="Failed to upload image to Cloudinary") from exc
         finally:
             try:
                 if temp_path.exists():
@@ -139,44 +124,52 @@ class ImageService:
                 pass
             await file.close()
 
-    async def get_image(self, stored_ref: str) -> bytes:
-        cached = image_cache.get(stored_ref)
+    async def get_image(self, public_id: str, content_type: str | None = None) -> bytes:
+        cached = image_cache.get(public_id)
         if cached:
             return cached
 
-        if stored_ref.startswith(("http://", "https://")):
-            file_content = await self._download_public_image(stored_ref)
-            if file_content:
-                image_cache.set(stored_ref, file_content)
+        try:
+            image_url = self._cloudinary_delivery_url(public_id, content_type)
+            with await asyncio.to_thread(partial(urlopen, image_url, timeout=20)) as response:
+                file_content = response.read()
+            if file_content and self._looks_like_image_bytes(file_content):
+                image_cache.set(public_id, file_content)
                 return file_content
-            raise HTTPException(status_code=404, detail="Image not found")
-
-        try:
-            async with await self._create_mega_client(login=True) as client:
-                with tempfile.TemporaryDirectory() as temp_dir:
-                    filesystem = await client.get_filesystem()
-                    if stored_ref not in filesystem:
-                        raise HTTPException(status_code=404, detail="Image not found")
-
-                    node = filesystem[stored_ref]
-                    output_path = await client.download(node, temp_dir)
-                    file_content = Path(output_path).read_bytes()
-                    if file_content:
-                        image_cache.set(stored_ref, file_content)
-                        return file_content
-
-                raise HTTPException(status_code=404, detail="Image not found")
-        except HTTPException:
-            raise
         except Exception as exc:
-            logger.error("Failed to read image from Mega: %s", exc)
-            raise HTTPException(status_code=404, detail="Image not found") from exc
+            logger.error("Failed to read image from Cloudinary: %s", exc)
 
-    async def delete_image(self, stored_ref: str) -> None:
+        # Fallback for legacy rows that may only be resolvable via Cloudinary metadata.
         try:
-            logger.info("Skipping remote delete for Mega public link: %s", stored_ref)
+            resource = await asyncio.to_thread(
+                cloudinary.api.resource,
+                public_id,
+                resource_type="image",
+                type="upload",
+            )
+            secure_url = resource.get("secure_url")
+            if secure_url:
+                with await asyncio.to_thread(partial(urlopen, secure_url, timeout=20)) as response:
+                    file_content = response.read()
+                if file_content and self._looks_like_image_bytes(file_content):
+                    image_cache.set(public_id, file_content)
+                    return file_content
+        except Exception as exc:
+            logger.error("Cloudinary metadata fallback failed: %s", exc)
+
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    async def delete_image(self, public_id: str) -> None:
+        await CloudinaryManager.configure()
+
+        try:
+            await asyncio.to_thread(
+                cloudinary.uploader.destroy,
+                public_id,
+                resource_type="image",
+                invalidate=True,
+            )
+        except Exception as exc:
+            logger.error("Failed to delete image from Cloudinary: %s", exc)
         finally:
-            image_cache.delete(stored_ref)
-
-
-
+            image_cache.delete(public_id)

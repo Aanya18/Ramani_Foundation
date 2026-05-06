@@ -55,7 +55,7 @@ async def get_proxied_image(
         raise HTTPException(status_code=404, detail="Image not found")
 
     try:
-        image_bytes = await image_service.get_image(item.mega_file_id)
+        image_bytes = await image_service.get_image(item.mega_file_id, getattr(item, "content_type", None))
     except HTTPException as e:
         # Clear stale references so repeated requests stop failing on the same row.
         if e.status_code == 404 and item.mega_file_id:

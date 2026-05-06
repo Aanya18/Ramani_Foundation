@@ -62,10 +62,11 @@ class Settings(BaseSettings):
             return [i.strip() for i in v.split(",")]
         return v
 
-    # Mega Storage Settings
-    MEGA_USER: Optional[str] = None
-    MEGA_PASSWORD: Optional[str] = None
-    MEGA_ROOT_FOLDER: str = Field(default="NGO_UPLOADS")
+    # Cloudinary Storage Settings
+    CLOUDINARY_CLOUD_NAME: Optional[str] = None
+    CLOUDINARY_API_KEY: Optional[str] = None
+    CLOUDINARY_API_SECRET: Optional[str] = None
+    CLOUDINARY_FOLDER: str = Field(default="ngo_uploads")
 
     # Authentication URL
     AUTH_TOKEN_URL: str
@@ -83,5 +84,6 @@ class Settings(BaseSettings):
         case_sensitive = True
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"
 
 settings = Settings()

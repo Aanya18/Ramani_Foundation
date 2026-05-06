@@ -65,7 +65,7 @@ async def seed():
                     content_type=mime_type,
                     data=file_handle.read(),
                 )
-                mega_file_id = await image_service.upload_image(upload)
+                public_id = await image_service.upload_image(upload)
 
             await db.execute(
                 text(
@@ -78,7 +78,7 @@ async def seed():
                 ),
                 {
                     "id": event_row[0],
-                    "mega_file_id": mega_file_id,
+                    "mega_file_id": public_id,
                     "content_type": mime_type,
                 },
             )

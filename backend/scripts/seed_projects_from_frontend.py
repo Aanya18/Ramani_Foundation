@@ -144,7 +144,7 @@ async def seed():
                     content_type=mime_type,
                     data=f.read(),
                 )
-                mega_file_id = await image_service.upload_image(upload)
+                public_id = await image_service.upload_image(upload)
 
             if not gallery_item_id:
                 gallery_item_id = uuid.uuid4()
@@ -160,7 +160,7 @@ async def seed():
                     {
                         "id": str(gallery_item_id),
                         "title": gallery_title,
-                        "mega_file_id": mega_file_id,
+                        "mega_file_id": public_id,
                         "content_type": mime_type,
                         "image_filename": image_path.name,
                         "project_id": str(project.id),
@@ -183,7 +183,7 @@ async def seed():
                     ),
                     {
                         "id": str(gallery_item_id),
-                        "mega_file_id": mega_file_id,
+                        "mega_file_id": public_id,
                         "content_type": mime_type,
                         "image_filename": image_path.name,
                         "description": f"Cover image for {project_name}",
@@ -197,14 +197,14 @@ async def seed():
             )
             existing_image = image_check.scalars().first()
             if existing_image:
-                existing_image.mega_file_id = mega_file_id
+                existing_image.mega_file_id = public_id
                 existing_image.image_filename = image_path.name
                 existing_image.content_type = mime_type
                 print(f"[update] gallery_images for: {project_name}")
             else:
                 db_image = GalleryImage(
                     gallery_item_id=gallery_item_id,
-                    mega_file_id=mega_file_id,
+                    mega_file_id=public_id,
                     image_filename=image_path.name,
                     content_type=mime_type,
                     order=0,
