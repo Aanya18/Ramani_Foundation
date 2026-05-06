@@ -62,6 +62,7 @@ function EventsPage() {
   };
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasJoinedWhatsapp, setHasJoinedWhatsapp] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({
     name: "",
     email: "",
@@ -72,6 +73,7 @@ function EventsPage() {
 
   const openRsvp = (event: EventItem) => {
     setSelectedEvent(event);
+    setHasJoinedWhatsapp(false);
     setRsvpForm({
       name: "",
       email: "",
@@ -84,11 +86,18 @@ function EventsPage() {
   const closeRsvp = () => {
     setSelectedEvent(null);
     setIsSubmitting(false);
+    setHasJoinedWhatsapp(false);
+  };
+
+  const handleJoinWhatsapp = () => {
+    if (!whatsappGroupUrl) return;
+    window.open(whatsappGroupUrl, "_blank", "noopener,noreferrer");
+    setHasJoinedWhatsapp(true);
   };
 
   const handleRsvpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedEvent || isSubmitting) return;
+    if (!selectedEvent || isSubmitting || !hasJoinedWhatsapp) return;
 
     setIsSubmitting(true);
     try {
@@ -344,7 +353,7 @@ function EventsPage() {
               <Button
                 type="submit"
                 className="rounded-full bg-gradient-brand text-white border-0 hover:opacity-90"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !hasJoinedWhatsapp}
               >
                 {isSubmitting ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
                 {isSubmitting ? "Submitting..." : "Submit RSVP"}
@@ -357,15 +366,24 @@ function EventsPage() {
                   <div>
                     <div className="font-semibold">Want group updates?</div>
                     <p className="text-sm text-muted-foreground">
-                      Join our WhatsApp group for event reminders and quick updates.
+                      Join our WhatsApp group first, then submit the RSVP.
                     </p>
                   </div>
-                  <Button asChild variant="secondary" className="rounded-full">
-                    <a href={whatsappGroupUrl} target="_blank" rel="noreferrer">
-                      Join WhatsApp Group
-                    </a>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="rounded-full"
+                    onClick={handleJoinWhatsapp}
+                    disabled={isSubmitting}
+                  >
+                    Join WhatsApp Group
                   </Button>
                 </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {hasJoinedWhatsapp
+                    ? "WhatsApp group link opened. You can submit the RSVP now."
+                    : "RSVP submission stays locked until you click the join button."}
+                </p>
               </div>
             )}
           </form>
